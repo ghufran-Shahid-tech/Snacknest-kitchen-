@@ -2,204 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Snacknest Kitchen | Billing System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Snacknest Kitchen POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #eef1f4;
-  margin: 0;
-  padding: 10px;
-}
-
-.container {
-  max-width: 420px;
-  margin: auto;
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-h2 {
-  text-align: center;
-  margin: 5px 0;
-}
-
-.subtitle {
-  text-align: center;
-  color: #666;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-.menu button {
-  width: 100%;
-  padding: 12px;
-  margin: 6px 0;
-  border: none;
-  background: #ff6b35;
-  color: #fff;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.menu button:hover {
-  background: #e85a28;
-}
-
-table {
-  width: 100%;
-  margin-top: 10px;
-  border-collapse: collapse;
-}
-
-th, td {
-  border-bottom: 1px solid #ddd;
-  padding: 6px;
-  font-size: 14px;
-}
-
-th {
-  text-align: left;
-}
-
-.total {
-  text-align: right;
-  font-size: 18px;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.print-btn {
-  width: 100%;
-  padding: 14px;
-  background: #28a745;
-  color: #fff;
-  border: none;
-  font-size: 17px;
-  border-radius: 8px;
-  margin-top: 12px;
-  cursor: pointer;
-}
-
-/* ===== 58mm Print Styling ===== */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .receipt, .receipt * {
-    visibility: visible;
-  }
-  .receipt {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 58mm;
-    font-size: 12px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+body { background: linear-gradient(135deg, #f0a, #89f); min-height: 100vh; color: #333; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
+.container { background: #fff; border-radius: 15px; padding: 30px; max-width: 1000px; width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+h1 { text-align: center; margin-bottom: 25px; color: #222; }
+.tabs { display: flex; justify-content: space-around; margin-bottom: 20px; flex-wrap: wrap; }
+.tab { padding: 10px 20px; cursor: pointer; border-radius: 5px; background: #eee; margin: 5px; transition: 0.3s; font-weight: bold; }
+.tab.active { background: #ff6b6b; color: #fff; }
+.menu-item, .bill-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; align-items: center; }
+.menu-item:last-child, .bill-item:last-child { border-bottom: none; }
+button { background: #ff6b6b; border: none; color: white; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+button:hover { background: #ff4757; }
+input[type=number] { width: 50px; padding: 4px; border-radius: 5px; border: 1px solid #ccc; margin-left: 10px; }
+.menu, .bill { margin-bottom: 30px; }
+.bill { border-top: 2px solid #ff6b6b; padding-top: 20px; }
+.total { text-align: right; font-size: 1.2rem; font-weight: bold; margin-top: 10px; }
+@media(max-width: 600px) {
+    .menu-item, .bill-item { flex-direction: column; align-items: flex-start; }
+    input[type=number] { margin-left: 0; margin-top: 5px; }
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-  <h2>Snacknest Kitchen</h2>
-  <div class="subtitle">Fast • Fresh • Delicious</div>
+    <h1>Snacknest Kitchen POS</h1>
 
-  <div class="menu">
-    <button onclick="addItem('Burger',200)">Burger – Rs 200</button>
-    <button onclick="addItem('Fries',150)">Fries – Rs 150</button>
-    <button onclick="addItem('Roll',180)">Roll – Rs 180</button>
-    <button onclick="addItem('Cold Drink',100)">Cold Drink – Rs 100</button>
-  </div>
+    <div class="tabs">
+        <div class="tab active" onclick="filterCategory('all', event)">All</div>
+        <div class="tab" onclick="filterCategory('friedrice', event)">Fried Rice</div>
+        <div class="tab" onclick="filterCategory('burgers', event)">Burgers</div>
+        <div class="tab" onclick="filterCategory('snacks', event)">Wraps & Snacks</div>
+        <div class="tab" onclick="filterCategory('drinks', event)">Drinks</div>
+    </div>
 
-  <table id="cart">
-    <tr>
-      <th>Item</th>
-      <th>Qty</th>
-      <th>Amt</th>
-    </tr>
-  </table>
+    <div class="menu">
+        <h2>Menu</h2>
+        <div id="menu-items"></div>
+    </div>
 
-  <div class="total">Total: Rs <span id="total">0</span></div>
-
-  <button class="print-btn" onclick="printBill()">Print Bill</button>
-</div>
-
-<!-- ===== Receipt (58mm) ===== -->
-<div class="receipt" id="receipt">
-  <div style="text-align:center;">
-    <strong>SNACKNEST KITCHEN</strong><br>
-    ------------------------------
-  </div>
-
-  <div id="receipt-items"></div>
-
-  <div style="border-top:1px dashed #000;margin-top:5px;"></div>
-
-  <div style="text-align:right;margin-top:4px;">
-    <strong>Total: Rs <span id="receipt-total"></span></strong>
-  </div>
-
-  <div style="text-align:center;margin-top:6px;font-size:11px;">
-    Thank you for choosing Snacknest Kitchen<br>
-    Musharraf Colony, Near Bus Terminal<br>
-    Karachi, Pakistan
-  </div>
+    <div class="bill">
+        <h2>Bill</h2>
+        <div id="bill-items">
+            <p>No items added yet.</p>
+        </div>
+        <div class="total" id="total">Total: PKR 0</div>
+        <button onclick="printBill()">Print Bill</button>
+    </div>
 </div>
 
 <script>
-let cart = {};
-let total = 0;
+const menu = [
+    { name: "FRIED RICE VEG", price: 200, category: "friedrice" },
+    { name: "FRIED RICE CHICKEN", price: 250, category: "friedrice" },
+    { name: "CHILLI CHICKEN", price: 250, category: "friedrice" },
+    { name: "CHOW MEIN", price: 250, category: "friedrice" },
+    { name: "BUN KABAB", price: 100, category: "burgers" },
+    { name: "ANDAY WALA BURGER", price: 150, category: "burgers" },
+    { name: "ZINGER BREAST", price: 300, category: "burgers" },
+    { name: "ZINGER BREAST CHEESE", price: 350, category: "burgers" },
+    { name: "ZINGER THIGH", price: 350, category: "burgers" },
+    { name: "ZINGER THIGH CHEESE", price: 400, category: "burgers" },
+    { name: "ALFREDO", price: 350, category: "snacks" },
+    { name: "LASAGNE", price: 50, category: "snacks" },
+    { name: "MASALA FRIES", price: 150, category: "snacks" },
+    { name: "MAYO FRIES", price: 150, category: "snacks" },
+    { name: "CHEESE FRIES", price: 250, category: "snacks" },
+    { name: "SHAWARMA", price: 170, category: "snacks" },
+    { name: "MOMOS", price: 200, category: "snacks" },
+    { name: "CHICKEN WINGS", price: 300, category: "snacks" },
+    { name: "PAKISTANI SOFT DRINKS 500ml", price: 100, category: "drinks" },
+];
 
-function addItem(name, price) {
-  if (!cart[name]) {
-    cart[name] = { qty: 1, price };
-  } else {
-    cart[name].qty++;
-  }
-  renderCart();
+let bill = [];
+let activeCategory = 'all';
+
+const menuContainer = document.getElementById('menu-items');
+const billContainer = document.getElementById('bill-items');
+const totalContainer = document.getElementById('total');
+const tabs = document.querySelectorAll('.tab');
+
+function renderMenu() {
+    menuContainer.innerHTML = '';
+    const filtered = activeCategory === 'all' ? menu : menu.filter(item => item.category === activeCategory);
+    filtered.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+            <span>${item.name} .... PKR ${item.price}</span>
+            <div>
+                Qty: <input type="number" value="1" min="1" id="qty-${index}">
+                <button onclick="addToBill(${index})">Add</button>
+            </div>
+        `;
+        menuContainer.appendChild(div);
+    });
 }
 
-function renderCart() {
-  const table = document.getElementById("cart");
-  table.innerHTML = `
-    <tr>
-      <th>Item</th>
-      <th>Qty</th>
-      <th>Amt</th>
-    </tr>`;
-  total = 0;
+function addToBill(index) {
+    const qtyInput = document.getElementById(`qty-${index}`);
+    const qty = parseInt(qtyInput.value) || 1;
+    const item = menu[index];
+    const existingIndex = bill.findIndex(b => b.name === item.name);
+    if (existingIndex >= 0) {
+        bill[existingIndex].quantity += qty;
+    } else {
+        bill.push({ ...item, quantity: qty });
+    }
+    renderBill();
+}
 
-  for (let item in cart) {
-    let amt = cart[item].qty * cart[item].price;
-    total += amt;
-    table.innerHTML += `
-      <tr>
-        <td>${item}</td>
-        <td>${cart[item].qty}</td>
-        <td>${amt}</td>
-      </tr>`;
-  }
+function renderBill() {
+    billContainer.innerHTML = '';
+    if (bill.length === 0) {
+        billContainer.innerHTML = '<p>No items added yet.</p>';
+        totalContainer.innerText = 'Total: PKR 0';
+        return;
+    }
+    let total = 0;
+    bill.forEach((item, index) => {
+        total += item.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'bill-item';
+        div.innerHTML = `
+            <span>${item.name} x${item.quantity}</span>
+            <span>PKR ${item.price * item.quantity} <button onclick="removeFromBill(${index})">Remove</button></span>
+        `;
+        billContainer.appendChild(div);
+    });
+    totalContainer.innerText = 'Total: PKR ' + total;
+}
 
-  document.getElementById("total").innerText = total;
+function removeFromBill(index) {
+    bill.splice(index, 1);
+    renderBill();
+}
+
+function filterCategory(category, event) {
+    activeCategory = category;
+    tabs.forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    renderMenu();
 }
 
 function printBill() {
-  let receiptItems = "";
-  for (let item in cart) {
-    receiptItems += `
-      ${item}  x${cart[item].qty}
-      <div style="text-align:right;">Rs ${cart[item].qty * cart[item].price}</div>`;
-  }
-  document.getElementById("receipt-items").innerHTML = receiptItems;
-  document.getElementById("receipt-total").innerText = total;
-  window.print();
+    if (bill.length === 0) {
+        alert("No items added to bill!");
+        return;
+    }
+    let billText = 'Snacknest Kitchen\n\nBill:\n';
+    let total = 0;
+    bill.forEach(item => {
+        billText += `${item.name} x${item.quantity} .... PKR ${item.price * item.quantity}\n`;
+        total += item.price * item.quantity;
+    });
+    billText += `\nTotal: PKR ${total}`;
+    alert(billText);
 }
+
+renderMenu();
 </script>
 
 </body>
