@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Snacknest Kitchen | Billing System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #eef1f4;
+  margin: 0;
+  padding: 10px;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  margin: 5px 0;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.menu button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border: none;
+  background: #ff6b35;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.menu button:hover {
+  background: #e85a28;
+}
+
+table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+th, td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px;
+  font-size: 14px;
+}
+
+th {
+  text-align: left;
+}
+
+.total {
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.print-btn {
+  width: 100%;
+  padding: 14px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  border-radius: 8px;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+/* ===== 58mm Print Styling ===== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .receipt, .receipt * {
+    visibility: visible;
+  }
+  .receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 58mm;
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Snacknest Kitchen</h2>
+  <div class="subtitle">Fast • Fresh • Delicious</div>
+
+  <div class="menu">
+    <button onclick="addItem('Burger',200)">Burger – Rs 200</button>
+    <button onclick="addItem('Fries',150)">Fries – Rs 150</button>
+    <button onclick="addItem('Roll',180)">Roll – Rs 180</button>
+    <button onclick="addItem('Cold Drink',100)">Cold Drink – Rs 100</button>
+  </div>
+
+  <table id="cart">
+    <tr>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Amt</th>
+    </tr>
+  </table>
+
+  <div class="total">Total: Rs <span id="total">0</span></div>
+
+  <button class="print-btn" onclick="printBill()">Print Bill</button>
+</div>
+
+<!-- ===== Receipt (58mm) ===== -->
+<div class="receipt" id="receipt">
+  <div style="text-align:center;">
+    <strong>SNACKNEST KITCHEN</strong><br>
+    ------------------------------
+  </div>
+
+  <div id="receipt-items"></div>
+
+  <div style="border-top:1px dashed #000;margin-top:5px;"></div>
+
+  <div style="text-align:right;margin-top:4px;">
+    <strong>Total: Rs <span id="receipt-total"></span></strong>
+  </div>
+
+  <div style="text-align:center;margin-top:6px;font-size:11px;">
+    Thank you for choosing Snacknest Kitchen<br>
+    Musharraf Colony, Near Bus Terminal<br>
+    Karachi, Pakistan
+  </div>
+</div>
+
+<script>
+let cart = {};
+let total = 0;
+
+function addItem(name, price) {
+  if (!cart[name]) {
+    cart[name] = { qty: 1, price };
+  } else {
+    cart[name].qty++;
+  }
+  renderCart();
+}
+
+function renderCart() {
+  const table = document.getElementById("cart");
+  table.innerHTML = `
+    <tr>
+      <th>Item</th>
+      <th>Qty</th>
+      <th>Amt</th>
+    </tr>`;
+  total = 0;
+
+  for (let item in cart) {
+    let amt = cart[item].qty * cart[item].price;
+    total += amt;
+    table.innerHTML += `
+      <tr>
+        <td>${item}</td>
+        <td>${cart[item].qty}</td>
+        <td>${amt}</td>
+      </tr>`;
+  }
+
+  document.getElementById("total").innerText = total;
+}
+
+function printBill() {
+  let receiptItems = "";
+  for (let item in cart) {
+    receiptItems += `
+      ${item}  x${cart[item].qty}
+      <div style="text-align:right;">Rs ${cart[item].qty * cart[item].price}</div>`;
+  }
+  document.getElementById("receipt-items").innerHTML = receiptItems;
+  document.getElementById("receipt-total").innerText = total;
+  window.print();
+}
+</script>
+
+</body>
+</html>
