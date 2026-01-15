@@ -1,171 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snacknest Kitchen POS</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SnackNest Kitchen – POS Billing Web App</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-body { background: linear-gradient(135deg, #f0a, #89f); min-height: 100vh; color: #333; padding: 20px; display: flex; justify-content: center; align-items: flex-start; }
-.container { background: #fff; border-radius: 15px; padding: 30px; max-width: 1000px; width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-h1 { text-align: center; margin-bottom: 25px; color: #222; }
-.tabs { display: flex; justify-content: space-around; margin-bottom: 20px; flex-wrap: wrap; }
-.tab { padding: 10px 20px; cursor: pointer; border-radius: 5px; background: #eee; margin: 5px; transition: 0.3s; font-weight: bold; }
-.tab.active { background: #ff6b6b; color: #fff; }
-.menu-item, .bill-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; align-items: center; }
-.menu-item:last-child, .bill-item:last-child { border-bottom: none; }
-button { background: #ff6b6b; border: none; color: white; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-button:hover { background: #ff4757; }
-input[type=number] { width: 50px; padding: 4px; border-radius: 5px; border: 1px solid #ccc; margin-left: 10px; }
-.menu, .bill { margin-bottom: 30px; }
-.bill { border-top: 2px solid #ff6b6b; padding-top: 20px; }
-.total { text-align: right; font-size: 1.2rem; font-weight: bold; margin-top: 10px; }
-@media(max-width: 600px) {
-    .menu-item, .bill-item { flex-direction: column; align-items: flex-start; }
-    input[type=number] { margin-left: 0; margin-top: 5px; }
-}
+:root{--primary:#e76f00;--dark:#111;--bg:#f6f7fb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Poppins;background:var(--bg)}
+header{background:var(--dark);color:#fff;padding:15px;text-align:center}
+.container{max-width:1200px;margin:auto;padding:15px}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px dashed #ddd}
+.menu-item button{background:var(--primary);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer}
+.qty-btn{background:#ddd;color:#111;margin:0 4px}
+.bill{padding:15px;border:2px solid #eee;border-radius:12px;background:#fff}
+.bill table{width:100%;border-collapse:collapse;margin-top:10px}
+.bill th,.bill td{padding:8px;border-bottom:1px solid #eee;font-size:14px;text-align:center}
+.total{display:flex;justify-content:space-between;font-weight:500;margin-top:6px}
+.total.grand{font-size:18px;font-weight:600}
+button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:10px;font-size:15px}
+.print{background:#111;color:#fff}
+.clear{background:#ccc}
+.addMenu{background:#0b8457;color:#fff;margin-top:10px}
+.report{margin-top:20px}
+.add-form{margin-top:10px;display:flex;gap:6px}
+.add-form input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc}
+.add-form button{padding:6px 12px;border:none;border-radius:6px;background:#0b8457;color:#fff;cursor:pointer}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+ header h1{font-size:20px}
+ header p{font-size:12px}
+ .container{padding:8px}
+ .card{padding:12px}
+ .menu-item span{font-size:13px}
+ .menu-item button{padding:5px 10px;font-size:12px}
+ .bill table th,.bill table td{font-size:12px;padding:6px}
+ .total{font-size:13px}
+ .total.grand{font-size:16px}
+ button.action{font-size:14px;padding:10px}
+ .add-form{flex-direction:column}
+ .add-form input,.add-form button{width:100%}
+}}
+@media print{body *{visibility:hidden}.bill,.bill *{visibility:visible}.bill{position:absolute;left:0;top:0;width:100%}}
 </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>Snacknest Kitchen POS</h1>
-
-    <div class="tabs">
-        <div class="tab active" onclick="filterCategory('all', event)">All</div>
-        <div class="tab" onclick="filterCategory('friedrice', event)">Fried Rice</div>
-        <div class="tab" onclick="filterCategory('burgers', event)">Burgers</div>
-        <div class="tab" onclick="filterCategory('snacks', event)">Wraps & Snacks</div>
-        <div class="tab" onclick="filterCategory('drinks', event)">Drinks</div>
-    </div>
-
-    <div class="menu">
-        <h2>Menu</h2>
-        <div id="menu-items"></div>
-    </div>
-
-    <div class="bill">
-        <h2>Bill</h2>
-        <div id="bill-items">
-            <p>No items added yet.</p>
-        </div>
-        <div class="total" id="total">Total: PKR 0</div>
-        <button onclick="printBill()">Print Bill</button>
-    </div>
+<header>
+<h1>🍽️ SnackNest Kitchen</h1>
+<p>Full POS Billing System • Click Menu • Add Menu • Print • Reports</p>
+</header><div class="container">
+<div class="grid"><div class="card">
+<h2>📋 Food Menu</h2>
+<div id="menu"></div>
+<div class="add-form">
+<input type="text" id="newItemName" placeholder="Item Name">
+<input type="number" id="newItemPrice" placeholder="Price">
+<button onclick="addNewMenuItem()">➕ Add Menu</button>
 </div>
-
-<script>
-const menu = [
-    { name: "FRIED RICE VEG", price: 200, category: "friedrice" },
-    { name: "FRIED RICE CHICKEN", price: 250, category: "friedrice" },
-    { name: "CHILLI CHICKEN", price: 250, category: "friedrice" },
-    { name: "CHOW MEIN", price: 250, category: "friedrice" },
-    { name: "BUN KABAB", price: 100, category: "burgers" },
-    { name: "ANDAY WALA BURGER", price: 150, category: "burgers" },
-    { name: "ZINGER BREAST", price: 300, category: "burgers" },
-    { name: "ZINGER BREAST CHEESE", price: 350, category: "burgers" },
-    { name: "ZINGER THIGH", price: 350, category: "burgers" },
-    { name: "ZINGER THIGH CHEESE", price: 400, category: "burgers" },
-    { name: "ALFREDO", price: 350, category: "snacks" },
-    { name: "LASAGNE", price: 50, category: "snacks" },
-    { name: "MASALA FRIES", price: 150, category: "snacks" },
-    { name: "MAYO FRIES", price: 150, category: "snacks" },
-    { name: "CHEESE FRIES", price: 250, category: "snacks" },
-    { name: "SHAWARMA", price: 170, category: "snacks" },
-    { name: "MOMOS", price: 200, category: "snacks" },
-    { name: "CHICKEN WINGS", price: 300, category: "snacks" },
-    { name: "PAKISTANI SOFT DRINKS 500ml", price: 100, category: "drinks" },
+</div><div class="card bill">
+<h2>🧾 Bill</h2>
+<div class="bill" id="billSection">
+<table>
+<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Action</th></tr></thead>
+<tbody id="billItems"></tbody>
+</table>
+<div class="total"><span>Subtotal</span><span id="sub">0</span></div>
+<div class="total"><span>Tax (5%)</span><span id="tax">0</span></div>
+<div class="total grand"><span>Total</span><span id="total">0</span></div>
+<button class="action print" onclick="printBill()">🖨️ Print Bill</button>
+<button class="action clear" onclick="clearBill()">🗑️ Clear Bill</button>
+</div>
+</div></div><div class="card report">
+<h2>📊 Daily Sales Report</h2>
+<table>
+<thead><tr><th>Time</th><th>Total (PKR)</th></tr></thead>
+<tbody id="report"></tbody>
+</table>
+</div>
+</div><script>
+let menuData=[
+{name:"Fried Rice (Veg)",price:200},
+{name:"Fried Rice (Chicken)",price:250},
+{name:"Zinger (Thigh)",price:350},
+{name:"Zinger (Thigh) with Cheese",price:400},
+{name:"Zinger (Breast)",price:300},
+{name:"Zinger (Breast) with Cheese",price:350},
+{name:"Shawarma",price:170},
+{name:"Chilli Chicken",price:250},
+{name:"Chow Mein",price:250},
+{name:"Masala Fries",price:150},
+{name:"Mayo Fries",price:150},
+{name:"Cheese Fries",price:250},
+{name:"Momos",price:200}
 ];
 
-let bill = [];
-let activeCategory = 'all';
-
-const menuContainer = document.getElementById('menu-items');
-const billContainer = document.getElementById('bill-items');
-const totalContainer = document.getElementById('total');
-const tabs = document.querySelectorAll('.tab');
-
-function renderMenu() {
-    menuContainer.innerHTML = '';
-    const filtered = activeCategory === 'all' ? menu : menu.filter(item => item.category === activeCategory);
-    filtered.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'menu-item';
-        div.innerHTML = `
-            <span>${item.name} .... PKR ${item.price}</span>
-            <div>
-                Qty: <input type="number" value="1" min="1" id="qty-${index}">
-                <button onclick="addToBill(${index})">Add</button>
-            </div>
-        `;
-        menuContainer.appendChild(div);
-    });
+let cart={};
+const menuDiv=document.getElementById('menu');
+function renderMenu(){
+ menuDiv.innerHTML='';
+ menuData.forEach(item=>{
+  const d=document.createElement('div');d.className='menu-item';
+  d.innerHTML=`<span>${item.name} – PKR ${item.price}</span><button>Add</button>`;
+  d.querySelector('button').onclick=()=>addItem(item);
+  menuDiv.appendChild(d);
+ });
 }
 
-function addToBill(index) {
-    const qtyInput = document.getElementById(`qty-${index}`);
-    const qty = parseInt(qtyInput.value) || 1;
-    const item = menu[index];
-    const existingIndex = bill.findIndex(b => b.name === item.name);
-    if (existingIndex >= 0) {
-        bill[existingIndex].quantity += qty;
-    } else {
-        bill.push({ ...item, quantity: qty });
-    }
-    renderBill();
+function addNewMenuItem(){
+ const name=document.getElementById('newItemName').value.trim();
+ const price=parseFloat(document.getElementById('newItemPrice').value);
+ if(name && !isNaN(price)){
+  menuData.push({name,price});
+  document.getElementById('newItemName').value='';
+  document.getElementById('newItemPrice').value='';
+  renderMenu();
+ }else{
+  alert('Please enter valid name and price');
+ }
 }
 
-function renderBill() {
-    billContainer.innerHTML = '';
-    if (bill.length === 0) {
-        billContainer.innerHTML = '<p>No items added yet.</p>';
-        totalContainer.innerText = 'Total: PKR 0';
-        return;
-    }
-    let total = 0;
-    bill.forEach((item, index) => {
-        total += item.price * item.quantity;
-        const div = document.createElement('div');
-        div.className = 'bill-item';
-        div.innerHTML = `
-            <span>${item.name} x${item.quantity}</span>
-            <span>PKR ${item.price * item.quantity} <button onclick="removeFromBill(${index})">Remove</button></span>
-        `;
-        billContainer.appendChild(div);
-    });
-    totalContainer.innerText = 'Total: PKR ' + total;
+function addItem(item){cart[item.name]=cart[item.name]||{qty:0,price:item.price};cart[item.name].qty++;renderBill();}
+function changeQty(name,delta){cart[name].qty+=delta;if(cart[name].qty<=0)delete cart[name];renderBill();}
+function renderBill(){
+ const tbody=document.getElementById('billItems');tbody.innerHTML='';
+ let subtotal=0;
+ Object.keys(cart).forEach(name=>{
+  const i=cart[name];const t=i.qty*i.price;subtotal+=t;
+  tbody.innerHTML+=`<tr><td>${name}</td><td>${i.qty}</td><td>${t}</td><td><button class='qty-btn' onclick="changeQty('${name}',1)">+</button><button class='qty-btn' onclick="changeQty('${name}',-1)">-</button></td></tr>`;
+ });
+ const tax=subtotal*0.05;
+ document.getElementById('sub').innerText='PKR '+subtotal;
+ document.getElementById('tax').innerText='PKR '+tax;
+ document.getElementById('total').innerText='PKR '+(subtotal+tax);
 }
-
-function removeFromBill(index) {
-    bill.splice(index, 1);
-    renderBill();
+function printBill(){saveReport();window.print();}
+function clearBill(){cart={};renderBill();}
+function saveReport(){
+ const list=JSON.parse(localStorage.getItem('sales')||'[]');
+ const total=document.getElementById('total').innerText.replace('PKR ','');
+ list.push({time:new Date().toLocaleTimeString(),total});
+ localStorage.setItem('sales',JSON.stringify(list));
+ loadReport();
 }
-
-function filterCategory(category, event) {
-    activeCategory = category;
-    tabs.forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    renderMenu();
-}
-
-function printBill() {
-    if (bill.length === 0) {
-        alert("No items added to bill!");
-        return;
-    }
-    let billText = 'Snacknest Kitchen\n\nBill:\n';
-    let total = 0;
-    bill.forEach(item => {
-        billText += `${item.name} x${item.quantity} .... PKR ${item.price * item.quantity}\n`;
-        total += item.price * item.quantity;
-    });
-    billText += `\nTotal: PKR ${total}`;
-    alert(billText);
+function loadReport(){
+ const list=JSON.parse(localStorage.getItem('sales')||'[]');
+ const r=document.getElementById('report');r.innerHTML='';
+ list.forEach(s=>r.innerHTML+=`<tr><td>${s.time}</td><td>${s.total}</td></tr>`);
 }
 
 renderMenu();
-</script>
-
-</body>
+loadReport();
+</script></body>
 </html>
