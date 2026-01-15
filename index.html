@@ -82,13 +82,13 @@ header p{margin:3px 0;font-size:12px;}
   text-align:center;
 }
 .bill-header img{
-  width:80px; /* bigger logo */
+  width:80px;
   margin-bottom:8px;
 }
 .bill-header h3{
   margin:4px 0;
-  font-size:24px; /* bigger */
-  font-weight:700; /* bold */
+  font-size:24px;
+  font-weight:700;
   letter-spacing:1px;
 }
 .bill-header p{
@@ -107,12 +107,14 @@ header p{margin:3px 0;font-size:12px;}
   border-bottom:1px solid #eee;
   text-align:center;
 }
+
 .qty-btn{
   background:#ddd;
   border:none;
   padding:3px 6px;
   font-size:12px;
   cursor:pointer;
+  margin:0 2px;
 }
 
 .total{
@@ -126,6 +128,16 @@ header p{margin:3px 0;font-size:12px;}
   font-weight:600;
   border-top:2px dashed #000;
   padding-top:6px;
+}
+
+.bill-footer{
+  text-align:center;
+  margin-top:8px;
+  font-size:12px;
+  font-weight:500;
+  border-top:1px dashed #ddd;
+  padding-top:6px;
+  letter-spacing:0.5px;
 }
 
 button.action{
@@ -246,7 +258,7 @@ button.action{
 
 <table>
 <thead>
-<tr><th>Item</th><th>Qty</th><th>Amount</th><th>Action</th></tr>
+<tr><th>Item</th><th>Qty</th><th>Amount</th></tr>
 </thead>
 <tbody id="billItems"></tbody>
 </table>
@@ -254,6 +266,10 @@ button.action{
 <div class="total"><span>Subtotal</span><span id="sub">PKR 0</span></div>
 <div class="total"><span>Delivery Charges</span><span id="delivery">PKR 50</span></div>
 <div class="total grand"><span>Total</span><span id="total">PKR 0</span></div>
+
+<div class="bill-footer">
+📱 WhatsApp: 0316 2341381  
+</div>
 
 <button class="action print" onclick="printBill()">🖨️ Print Bill</button>
 <button class="action clear" onclick="clearBill()">🗑️ Clear</button>
@@ -348,7 +364,6 @@ function changeQty(name,d){
   renderBill();
 }
 
-// Clickable delivery charge button
 function setDelivery(amount){
   deliveryCharge = amount;
   renderBill();
@@ -367,10 +382,6 @@ function renderBill(){
       <td>${n}</td>
       <td>${i.qty}</td>
       <td>${t}</td>
-      <td>
-        <button class="qty-btn" onclick="changeQty('${n}',1)">+</button>
-        <button class="qty-btn" onclick="changeQty('${n}',-1)">-</button>
-      </td>
     </tr>`;
   }
 
