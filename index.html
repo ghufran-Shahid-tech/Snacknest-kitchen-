@@ -4,95 +4,72 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SnackNest Kitchen POS</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
-:root{--primary:#e76f00;--dark:#111;--bg:#f6f7fb}
-*{box-sizing:border-box}
-body{margin:0;font-family:Poppins;background:var(--bg);overflow:hidden}
-
-/* Header */
-header{background:var(--dark);color:#fff;padding:15px;text-align:center}
-
-/* Container & Grid */
-.container{max-width:1200px;margin:auto;padding:15px}
-.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
-.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
-
-/* Menu */
-.menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px dashed #ddd}
-.menu-item button{background:var(--primary);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer}
-
-/* Bill */
-.bill{padding:15px;border:2px solid #eee;border-radius:12px}
-.bill table{width:100%;border-collapse:collapse;margin-top:10px}
-.bill th,.bill td{padding:8px;border-bottom:1px solid #eee;font-size:14px;text-align:center}
-.qty-btn{background:#ddd;border:none;padding:4px 8px;cursor:pointer}
-.total{display:flex;justify-content:space-between;margin-top:6px}
-.total.grand{font-size:18px;font-weight:600}
-button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:10px;font-size:15px;cursor:pointer}
-.print{background:#111;color:#fff}
-.clear{background:#ccc}
-
-/* Add Menu */
-.add-form{margin-top:10px;display:flex;gap:6px;pointer-events:none;opacity:0.4}
-.add-form input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc}
-.add-form button{padding:6px 12px;border:none;border-radius:6px;background:#0b8457;color:#fff;cursor:pointer}
-
-/* Report */
-.report{margin-top:20px}
+:root{--primary:#e76f00;--dark:#111;--bg:#f6f7fb;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:Poppins;background:var(--bg);overflow:hidden;}
+header{background:var(--dark);color:#fff;padding:15px;text-align:center;font-size:16px;}
+header p{font-size:12px;margin:4px 0;}
+.container{max-width:1200px;margin:auto;padding:8px;}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;}
+.card{background:#fff;border-radius:12px;padding:15px;box-shadow:0 6px 20px rgba(0,0,0,.07);}
+.menu-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px dashed #ddd;font-size:14px;}
+.menu-item button{background:var(--primary);border:none;color:#fff;padding:5px 10px;border-radius:6px;font-size:13px;}
+.bill{padding:12px;border:2px solid #eee;border-radius:12px;overflow-x:auto;}
+.bill table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+.bill th,.bill td{padding:6px;border-bottom:1px solid #eee;text-align:center;font-size:12px;}
+.qty-btn{background:#ddd;border:none;padding:3px 6px;cursor:pointer;font-size:12px;}
+.total{display:flex;justify-content:space-between;margin-top:4px;font-size:13px;}
+.total.grand{font-size:16px;font-weight:600;}
+button.action{width:100%;margin-top:6px;padding:10px;border:none;border-radius:8px;font-size:14px;cursor:pointer;}
+.print{background:#111;color:#fff;}
+.clear{background:#ccc;}
+.add-form{margin-top:8px;display:flex;gap:4px;pointer-events:none;opacity:0.4;flex-wrap:wrap;transition:opacity 0.3s ease;}
+.add-form input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;font-size:13px;}
+.add-form button{padding:6px 12px;border:none;border-radius:6px;background:#0b8457;color:#fff;cursor:pointer;font-size:13px;}
+.report{margin-top:15px;overflow-x:auto;}
 
 /* Modal */
 #adminModal{
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);display:flex;justify-content:center;align-items:center;
+  z-index:9999;opacity:0;
+  animation:fadeIn 0.5s forwards;
 }
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 #adminModal .modal-content{
-  background:#fff;
-  padding:30px;
-  border-radius:12px;
-  text-align:center;
-  width:300px;
+  background:#fff;padding:25px;border-radius:12px;text-align:center;width:90%;max-width:320px;
+  transform:translateY(-30px);animation:slideDown 0.5s forwards;
 }
-#adminModal input{
-  width:100%;
-  padding:8px;
-  margin-top:12px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  font-size:14px;
-}
-#adminModal button{
-  margin-top:15px;
-  width:100%;
-  padding:10px;
-  border:none;
-  background:var(--primary);
-  color:#fff;
-  font-size:15px;
-  border-radius:6px;
-  cursor:pointer;
-}
+@keyframes slideDown{from{transform:translateY(-30px);}to{transform:translateY(0);}}
+#mainContent.blur{filter:blur(6px);transition:filter 0.3s ease;}
 
 /* PRINT */
 @media print{
- header,.grid .card:first-child,.report,button,.add-form{display:none!important}
- .bill{border:none;box-shadow:none}
- .bill th,.bill td{border-bottom:1px dashed #000;font-size:12px}
- .total.grand{border-top:2px solid #000;padding-top:6px}
+ header,.grid .card:first-child,.report,button,.add-form{display:none!important;}
+ .bill{border:none;box-shadow:none;}
+ .bill th,.bill td{border-bottom:1px dashed #000;font-size:12px;}
+ .total.grand{border-top:2px solid #000;padding-top:6px;}
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .grid{grid-template-columns:1fr;}
+  .menu-item{font-size:13px;}
+  .menu-item button{padding:4px 8px;font-size:12px;}
+  .add-form input,.add-form button{font-size:12px;padding:5px;}
+  header h1{font-size:18px;}
+  header p{font-size:11px;}
+  .total,.total.grand{font-size:13px;}
+  button.action{padding:9px;font-size:13px;}
+  .bill th,.bill td{font-size:11px;padding:4px;}
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
+<div id="mainContent">
 <header>
 <h1>🍽️ SnackNest Kitchen</h1>
 <p>POS Billing System</p>
@@ -100,12 +77,10 @@ button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:1
 
 <div class="container">
 <div class="grid">
-
-<!-- MENU -->
+<!-- Menu -->
 <div class="card">
 <h2>📋 Food Menu</h2>
 <div id="menu"></div>
-
 <div id="adminPanel" class="add-form">
 <input type="text" id="newItemName" placeholder="Item Name">
 <input type="number" id="newItemPrice" placeholder="Price">
@@ -113,26 +88,20 @@ button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:1
 </div>
 </div>
 
-<!-- BILL -->
+<!-- Bill -->
 <div class="card bill">
 <h2 style="text-align:center">🧾 SnackNest Kitchen</h2>
 <p style="text-align:center;font-size:12px">Thank You For Your Order ❤️</p>
-
 <table>
-<thead>
-<tr><th>Item</th><th>Qty</th><th>Amount</th><th>Action</th></tr>
-</thead>
+<thead><tr><th>Item</th><th>Qty</th><th>Amount</th><th>Action</th></tr></thead>
 <tbody id="billItems"></tbody>
 </table>
-
 <div class="total"><span>Subtotal</span><span id="sub">PKR 0</span></div>
 <div class="total"><span>Tax (5%)</span><span id="tax">PKR 0</span></div>
 <div class="total grand"><span>Total</span><span id="total">PKR 0</span></div>
-
 <button class="action print" onclick="printBill()">🖨️ Print Bill</button>
 <button class="action clear" onclick="clearBill()">🗑️ Clear Bill</button>
 </div>
-
 </div>
 
 <div class="card report">
@@ -143,19 +112,19 @@ button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:1
 </table>
 </div>
 </div>
+</div> <!-- mainContent end -->
 
 <!-- Admin Modal -->
 <div id="adminModal">
-  <div class="modal-content">
-    <h2>Admin Login</h2>
-    <input type="password" id="adminPasswordInput" placeholder="Enter Password">
-    <button onclick="checkAdminPassword()">Enter</button>
-  </div>
+<div class="modal-content">
+<h2>Admin Login</h2>
+<input type="password" id="adminPasswordInput" placeholder="Enter Password">
+<button onclick="checkAdminPassword()">Enter</button>
+</div>
 </div>
 
 <script>
-const ADMIN_PASSWORD="Snacknest01"; // 🔑 Admin Password
-
+const ADMIN_PASSWORD="123"; // 🔑 Admin Password
 let menuData=[
 {name:"Fried Rice (Veg)",price:200},
 {name:"Fried Rice (Chicken)",price:250},
@@ -165,19 +134,25 @@ let menuData=[
 {name:"French Fries",price:150},
 {name:"Momos",price:200}
 ];
-
 let cart={};
 const menuDiv=document.getElementById("menu");
 const adminPanel=document.getElementById("adminPanel");
 const adminModal=document.getElementById("adminModal");
+const mainContent=document.getElementById("mainContent");
 
-// ✅ LOCKING MODAL
+// Show modal & blur background
+window.onload=function(){
+  mainContent.classList.add("blur");
+  document.getElementById("adminPasswordInput").focus();
+};
+
 function checkAdminPassword(){
   const val=document.getElementById("adminPasswordInput").value;
   if(val===ADMIN_PASSWORD){
     adminPanel.style.pointerEvents="auto";
     adminPanel.style.opacity="1";
     adminModal.style.display="none";
+    mainContent.classList.remove("blur");
     document.body.style.overflow="auto"; // allow scrolling
     renderMenu();
     loadReport();
@@ -189,10 +164,7 @@ function checkAdminPassword(){
   }
 }
 
-// Disable all content until admin logs in
-document.body.style.overflow="hidden";
-
-// RENDER MENU & BILL
+// MENU & BILL FUNCTIONS
 function renderMenu(){
  menuDiv.innerHTML="";
  menuData.forEach(item=>{
@@ -203,19 +175,16 @@ function renderMenu(){
    </div>`;
  });
 }
-
 function addItem(name,price){
  if(!cart[name]) cart[name]={qty:0,price};
  cart[name].qty++;
  renderBill();
 }
-
 function changeQty(name,delta){
  cart[name].qty+=delta;
  if(cart[name].qty<=0) delete cart[name];
  renderBill();
 }
-
 function renderBill(){
  const tbody=document.getElementById("billItems");
  tbody.innerHTML="";
@@ -240,7 +209,6 @@ function renderBill(){
  document.getElementById("tax").innerText="PKR "+tax.toFixed(0);
  document.getElementById("total").innerText="PKR "+(subtotal+tax).toFixed(0);
 }
-
 function addNewMenuItem(){
  const name=newItemName.value.trim();
  const price=parseFloat(newItemPrice.value);
@@ -251,24 +219,20 @@ function addNewMenuItem(){
    renderMenu();
  }
 }
-
 function printBill(){saveReport();window.print();}
 function clearBill(){cart={};renderBill();}
-
 function saveReport(){
  const list=JSON.parse(localStorage.getItem("sales")||"[]");
  list.push({time:new Date().toLocaleTimeString(),total:total.innerText});
  localStorage.setItem("sales",JSON.stringify(list));
  loadReport();
 }
-
 function loadReport(){
  const list=JSON.parse(localStorage.getItem("sales")||"[]");
  const r=document.getElementById("report");
  r.innerHTML="";
  list.forEach(s=>r.innerHTML+=`<tr><td>${s.time}</td><td>${s.total}</td></tr>`);
 }
-
 </script>
 </body>
 </html>
