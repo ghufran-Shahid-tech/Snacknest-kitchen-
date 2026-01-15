@@ -1,156 +1,274 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SnackNest Kitchen – POS Billing Web App</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnackNest Kitchen POS</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
 :root{--primary:#e76f00;--dark:#111;--bg:#f6f7fb}
 *{box-sizing:border-box}
-body{margin:0;font-family:Poppins;background:var(--bg)}
+body{margin:0;font-family:Poppins;background:var(--bg);overflow:hidden}
+
+/* Header */
 header{background:var(--dark);color:#fff;padding:15px;text-align:center}
+
+/* Container & Grid */
 .container{max-width:1200px;margin:auto;padding:15px}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
 .card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+
+/* Menu */
 .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px dashed #ddd}
 .menu-item button{background:var(--primary);border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer}
-.qty-btn{background:#ddd;color:#111;margin:0 4px}
-.bill{padding:15px;border:2px solid #eee;border-radius:12px;background:#fff}
+
+/* Bill */
+.bill{padding:15px;border:2px solid #eee;border-radius:12px}
 .bill table{width:100%;border-collapse:collapse;margin-top:10px}
 .bill th,.bill td{padding:8px;border-bottom:1px solid #eee;font-size:14px;text-align:center}
-.total{display:flex;justify-content:space-between;font-weight:500;margin-top:6px}
+.qty-btn{background:#ddd;border:none;padding:4px 8px;cursor:pointer}
+.total{display:flex;justify-content:space-between;margin-top:6px}
 .total.grand{font-size:18px;font-weight:600}
-button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:10px;font-size:15px}
+button.action{width:100%;margin-top:8px;padding:12px;border:none;border-radius:10px;font-size:15px;cursor:pointer}
 .print{background:#111;color:#fff}
 .clear{background:#ccc}
-.addMenu{background:#0b8457;color:#fff;margin-top:10px}
-.report{margin-top:20px}
-.add-form{margin-top:10px;display:flex;gap:6px}
+
+/* Add Menu */
+.add-form{margin-top:10px;display:flex;gap:6px;pointer-events:none;opacity:0.4}
 .add-form input{flex:1;padding:6px;border-radius:6px;border:1px solid #ccc}
 .add-form button{padding:6px 12px;border:none;border-radius:6px;background:#0b8457;color:#fff;cursor:pointer}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-@media(max-width:600px){
- header h1{font-size:20px}
- header p{font-size:12px}
- .container{padding:8px}
- .card{padding:12px}
- .menu-item span{font-size:13px}
- .menu-item button{padding:5px 10px;font-size:12px}
- .bill table th,.bill table td{font-size:12px;padding:6px}
- .total{font-size:13px}
- .total.grand{font-size:16px}
- button.action{font-size:14px;padding:10px}
- .add-form{flex-direction:column}
- .add-form input,.add-form button{width:100%}
-}}
-@media print{body *{visibility:hidden}.bill,.bill *{visibility:visible}.bill{position:absolute;left:0;top:0;width:100%}}
+
+/* Report */
+.report{margin-top:20px}
+
+/* Modal */
+#adminModal{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+#adminModal .modal-content{
+  background:#fff;
+  padding:30px;
+  border-radius:12px;
+  text-align:center;
+  width:300px;
+}
+#adminModal input{
+  width:100%;
+  padding:8px;
+  margin-top:12px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+#adminModal button{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  font-size:15px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* PRINT */
+@media print{
+ header,.grid .card:first-child,.report,button,.add-form{display:none!important}
+ .bill{border:none;box-shadow:none}
+ .bill th,.bill td{border-bottom:1px dashed #000;font-size:12px}
+ .total.grand{border-top:2px solid #000;padding-top:6px}
+}
 </style>
 </head>
 <body>
+
+<!-- Header -->
 <header>
 <h1>🍽️ SnackNest Kitchen</h1>
-<p>Full POS Billing System • Click Menu • Add Menu • Print • Reports</p>
-</header><div class="container">
-<div class="grid"><div class="card">
+<p>POS Billing System</p>
+</header>
+
+<div class="container">
+<div class="grid">
+
+<!-- MENU -->
+<div class="card">
 <h2>📋 Food Menu</h2>
 <div id="menu"></div>
-<div class="add-form">
+
+<div id="adminPanel" class="add-form">
 <input type="text" id="newItemName" placeholder="Item Name">
 <input type="number" id="newItemPrice" placeholder="Price">
 <button onclick="addNewMenuItem()">➕ Add Menu</button>
 </div>
-</div><div class="card bill">
-<h2>🧾 Bill</h2>
-<div class="bill" id="billSection">
+</div>
+
+<!-- BILL -->
+<div class="card bill">
+<h2 style="text-align:center">🧾 SnackNest Kitchen</h2>
+<p style="text-align:center;font-size:12px">Thank You For Your Order ❤️</p>
+
 <table>
-<thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Action</th></tr></thead>
+<thead>
+<tr><th>Item</th><th>Qty</th><th>Amount</th><th>Action</th></tr>
+</thead>
 <tbody id="billItems"></tbody>
 </table>
-<div class="total"><span>Subtotal</span><span id="sub">0</span></div>
-<div class="total"><span>Tax (5%)</span><span id="tax">0</span></div>
-<div class="total grand"><span>Total</span><span id="total">0</span></div>
+
+<div class="total"><span>Subtotal</span><span id="sub">PKR 0</span></div>
+<div class="total"><span>Tax (5%)</span><span id="tax">PKR 0</span></div>
+<div class="total grand"><span>Total</span><span id="total">PKR 0</span></div>
+
 <button class="action print" onclick="printBill()">🖨️ Print Bill</button>
 <button class="action clear" onclick="clearBill()">🗑️ Clear Bill</button>
 </div>
-</div></div><div class="card report">
-<h2>📊 Daily Sales Report</h2>
+
+</div>
+
+<div class="card report">
+<h2>📊 Daily Sales</h2>
 <table>
-<thead><tr><th>Time</th><th>Total (PKR)</th></tr></thead>
+<thead><tr><th>Time</th><th>Total</th></tr></thead>
 <tbody id="report"></tbody>
 </table>
 </div>
-</div><script>
+</div>
+
+<!-- Admin Modal -->
+<div id="adminModal">
+  <div class="modal-content">
+    <h2>Admin Login</h2>
+    <input type="password" id="adminPasswordInput" placeholder="Enter Password">
+    <button onclick="checkAdminPassword()">Enter</button>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD="Snacknest01"; // 🔑 Admin Password
+
 let menuData=[
 {name:"Fried Rice (Veg)",price:200},
 {name:"Fried Rice (Chicken)",price:250},
-{name:"Zinger (Thigh)",price:350},
-{name:"Zinger (Thigh) with Cheese",price:400},
-{name:"Zinger (Breast)",price:300},
-{name:"Zinger (Breast) with Cheese",price:350},
+{name:"Zinger Burger",price:350},
 {name:"Shawarma",price:170},
-{name:"Chilli Chicken",price:250},
 {name:"Chow Mein",price:250},
-{name:"Masala Fries",price:150},
-{name:"Mayo Fries",price:150},
-{name:"Cheese Fries",price:250},
+{name:"French Fries",price:150},
 {name:"Momos",price:200}
 ];
 
 let cart={};
-const menuDiv=document.getElementById('menu');
+const menuDiv=document.getElementById("menu");
+const adminPanel=document.getElementById("adminPanel");
+const adminModal=document.getElementById("adminModal");
+
+// ✅ LOCKING MODAL
+function checkAdminPassword(){
+  const val=document.getElementById("adminPasswordInput").value;
+  if(val===ADMIN_PASSWORD){
+    adminPanel.style.pointerEvents="auto";
+    adminPanel.style.opacity="1";
+    adminModal.style.display="none";
+    document.body.style.overflow="auto"; // allow scrolling
+    renderMenu();
+    loadReport();
+    alert("Admin Access Granted ✅");
+  } else {
+    alert("Wrong Password ❌");
+    document.getElementById("adminPasswordInput").value="";
+    document.getElementById("adminPasswordInput").focus();
+  }
+}
+
+// Disable all content until admin logs in
+document.body.style.overflow="hidden";
+
+// RENDER MENU & BILL
 function renderMenu(){
- menuDiv.innerHTML='';
+ menuDiv.innerHTML="";
  menuData.forEach(item=>{
-  const d=document.createElement('div');d.className='menu-item';
-  d.innerHTML=`<span>${item.name} – PKR ${item.price}</span><button>Add</button>`;
-  d.querySelector('button').onclick=()=>addItem(item);
-  menuDiv.appendChild(d);
+   menuDiv.innerHTML+=`
+   <div class="menu-item">
+     <span>${item.name} – PKR ${item.price}</span>
+     <button onclick="addItem('${item.name}',${item.price})">Add</button>
+   </div>`;
  });
+}
+
+function addItem(name,price){
+ if(!cart[name]) cart[name]={qty:0,price};
+ cart[name].qty++;
+ renderBill();
+}
+
+function changeQty(name,delta){
+ cart[name].qty+=delta;
+ if(cart[name].qty<=0) delete cart[name];
+ renderBill();
+}
+
+function renderBill(){
+ const tbody=document.getElementById("billItems");
+ tbody.innerHTML="";
+ let subtotal=0;
+ for(let name in cart){
+   const i=cart[name];
+   const t=i.qty*i.price;
+   subtotal+=t;
+   tbody.innerHTML+=`
+   <tr>
+     <td>${name}</td>
+     <td>${i.qty}</td>
+     <td>${t}</td>
+     <td>
+       <button class="qty-btn" onclick="changeQty('${name}',1)">+</button>
+       <button class="qty-btn" onclick="changeQty('${name}',-1)">-</button>
+     </td>
+   </tr>`;
+ }
+ const tax=subtotal*0.05;
+ document.getElementById("sub").innerText="PKR "+subtotal;
+ document.getElementById("tax").innerText="PKR "+tax.toFixed(0);
+ document.getElementById("total").innerText="PKR "+(subtotal+tax).toFixed(0);
 }
 
 function addNewMenuItem(){
- const name=document.getElementById('newItemName').value.trim();
- const price=parseFloat(document.getElementById('newItemPrice').value);
- if(name && !isNaN(price)){
-  menuData.push({name,price});
-  document.getElementById('newItemName').value='';
-  document.getElementById('newItemPrice').value='';
-  renderMenu();
- }else{
-  alert('Please enter valid name and price');
+ const name=newItemName.value.trim();
+ const price=parseFloat(newItemPrice.value);
+ if(name && price){
+   menuData.push({name,price});
+   newItemName.value="";
+   newItemPrice.value="";
+   renderMenu();
  }
 }
 
-function addItem(item){cart[item.name]=cart[item.name]||{qty:0,price:item.price};cart[item.name].qty++;renderBill();}
-function changeQty(name,delta){cart[name].qty+=delta;if(cart[name].qty<=0)delete cart[name];renderBill();}
-function renderBill(){
- const tbody=document.getElementById('billItems');tbody.innerHTML='';
- let subtotal=0;
- Object.keys(cart).forEach(name=>{
-  const i=cart[name];const t=i.qty*i.price;subtotal+=t;
-  tbody.innerHTML+=`<tr><td>${name}</td><td>${i.qty}</td><td>${t}</td><td><button class='qty-btn' onclick="changeQty('${name}',1)">+</button><button class='qty-btn' onclick="changeQty('${name}',-1)">-</button></td></tr>`;
- });
- const tax=subtotal*0.05;
- document.getElementById('sub').innerText='PKR '+subtotal;
- document.getElementById('tax').innerText='PKR '+tax;
- document.getElementById('total').innerText='PKR '+(subtotal+tax);
-}
 function printBill(){saveReport();window.print();}
 function clearBill(){cart={};renderBill();}
+
 function saveReport(){
- const list=JSON.parse(localStorage.getItem('sales')||'[]');
- const total=document.getElementById('total').innerText.replace('PKR ','');
- list.push({time:new Date().toLocaleTimeString(),total});
- localStorage.setItem('sales',JSON.stringify(list));
+ const list=JSON.parse(localStorage.getItem("sales")||"[]");
+ list.push({time:new Date().toLocaleTimeString(),total:total.innerText});
+ localStorage.setItem("sales",JSON.stringify(list));
  loadReport();
 }
+
 function loadReport(){
- const list=JSON.parse(localStorage.getItem('sales')||'[]');
- const r=document.getElementById('report');r.innerHTML='';
+ const list=JSON.parse(localStorage.getItem("sales")||"[]");
+ const r=document.getElementById("report");
+ r.innerHTML="";
  list.forEach(s=>r.innerHTML+=`<tr><td>${s.time}</td><td>${s.total}</td></tr>`);
 }
 
-renderMenu();
-loadReport();
-</script></body>
+</script>
+</body>
 </html>
