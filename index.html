@@ -12,57 +12,105 @@
   --primary:#e76f00;
   --dark:#111;
   --bg:#f6f7fb;
+  --green:#0bb36c;
+  --red:#e63946;
 }
 *{box-sizing:border-box;}
 body{margin:0;font-family:Poppins,sans-serif;background:var(--bg);}
-header{background:#111;color:#fff;padding:14px;text-align:center;}
+
+header{
+  background:#111;
+  color:#fff;
+  padding:14px;
+  text-align:center;
+  font-weight:700;
+  letter-spacing:.5px;
+}
 
 .container{max-width:1200px;margin:auto;padding:10px;}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;}
 
-.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.08);}
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 
+/* MENU */
 .menu-item{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:8px 0;
+  padding:10px 0;
   border-bottom:1px dashed #ddd;
   font-size:14px;
 }
+.menu-item span{font-weight:500;}
+
 .menu-item button{
   background:var(--primary);
   color:#fff;
   border:none;
-  padding:5px 12px;
-  border-radius:6px;
+  padding:6px 14px;
+  border-radius:8px;
   font-size:12px;
+  cursor:pointer;
+  position:relative;
+  transition:.15s;
+}
+.menu-item button:active{transform:scale(.9);}
+
+/* ADD COUNT BADGE */
+.badge{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  background:#111;
+  color:#fff;
+  font-size:10px;
+  padding:2px 6px;
+  border-radius:50%;
 }
 
+/* BILL */
 .bill-header{text-align:center;}
-.bill-header img{width:200px;margin:auto;display:block;}
-.bill-header h3{font-size:26px;font-weight:900;margin:5px 0;}
+.bill-header img{width:160px;margin:auto;display:block;}
+.bill-header h3{font-size:24px;font-weight:900;margin:6px 0;}
 
 .bill table{width:100%;border-collapse:collapse;font-size:12px;}
 .bill th,.bill td{padding:6px;border-bottom:1px solid #eee;text-align:center;}
 
+.qty-btn{
+  border:none;
+  background:#eee;
+  padding:2px 7px;
+  border-radius:6px;
+  font-size:12px;
+  cursor:pointer;
+}
+.qty-btn.plus{background:var(--green);color:#fff;}
+.qty-btn.minus{background:var(--red);color:#fff;}
+
 .total{display:flex;justify-content:space-between;font-size:13px;}
 .total.grand{font-size:16px;font-weight:700;border-top:2px dashed #000;padding-top:6px;}
 
+/* DELIVERY */
 .delivery-box{margin-top:8px;border-top:1px dashed #ddd;padding-top:8px;}
 .delivery-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .delivery-btns button{
-  padding:6px;border:none;border-radius:6px;background:#eee;font-size:12px;
+  padding:6px;border:none;border-radius:8px;background:#eee;font-size:12px;
 }
 .delivery-btns button.active{background:var(--primary);color:#fff;}
 
 button.action{
   width:100%;
   margin-top:6px;
-  padding:9px;
+  padding:10px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   font-size:14px;
+  font-weight:600;
 }
 .print{background:#111;color:#fff;}
 .clear{background:#ccc;}
@@ -76,9 +124,7 @@ button.action{
 
 <body>
 
-<header>
-  <h2>🍽️ SnackNest Kitchen POS</h2>
-</header>
+<header>🍽️ SnackNest Kitchen POS</header>
 
 <div class="container">
 <div class="grid">
@@ -112,11 +158,9 @@ button.action{
 <div class="delivery-box">
 <h4>🚚 Delivery Charges</h4>
 <div class="delivery-btns">
-<button onclick="setDelivery(50,this)">Musharaf Colony – 50</button>
+<button onclick="setDelivery(50,this)">Musharaf – 50</button>
 <button onclick="setDelivery(150,this)">Naval – 150</button>
-<button onclick="setDelivery(200,this)">L Pati – 200</button>
-<button onclick="setDelivery(200,this)">Gulshan-e-Masdoor – 200</button>
-<button onclick="setDelivery(200,this)">Army Base – 200</button>
+<button onclick="setDelivery(200,this)">Others – 200</button>
 </div>
 </div>
 
@@ -124,7 +168,7 @@ button.action{
 📱 0316 2341381<br>📍 Musharaf Colony, Karachi
 </div>
 
-<button class="action print" onclick="printBill()">🖨️ Print</button>
+<button class="action print" onclick="printBill()">🖨️ Print Bill</button>
 <button class="action clear" onclick="clearBill()">🗑️ Clear</button>
 
 </div>
@@ -136,25 +180,14 @@ let token=Number(localStorage.getItem("token"))||1;
 let cart={},deliveryCharge=0;
 
 let menuData=[
-{name:"Fried Rice Veg",price:200},
-{name:"Fried Rice Chicken",price:250},
-{name:"Chilli Chicken",price:250},
-{name:"Chow Mein",price:250},
-{name:"Bun Kabab",price:100},
-{name:"Anday Wala Burger",price:150},
-{name:"Zinger Breast",price:300},
-{name:"Zinger Breast Cheese",price:350},
-{name:"Zinger Thigh",price:350},
-{name:"Zinger Thigh Cheese",price:400},
-{name:"Alfredo",price:350},
-{name:"Lasagne",price:500},
-{name:"Masala Fries",price:150},
-{name:"Mayo Fries",price:150},
-{name:"Cheese Fries",price:250},
-{name:"Pakistani Soft Drink 500ml",price:100},
-{name:"Shawarma",price:170},
-{name:"Momos",price:200},
-{name:"Chicken Wings",price:350}
+["Fried Rice Veg",200],["Fried Rice Chicken",250],["Chilli Chicken",250],
+["Chow Mein",250],["Bun Kabab",100],["Anday Wala Burger",150],
+["Zinger Breast",300],["Zinger Breast Cheese",350],
+["Zinger Thigh",350],["Zinger Thigh Cheese",400],
+["Alfredo",350],["Lasagne",500],
+["Masala Fries",150],["Cheese Fries",250],
+["Soft Drink 500ml",100],["Shawarma",170],
+["Momos",200],["Chicken Wings",350]
 ];
 
 function init(){
@@ -167,10 +200,13 @@ init();
 function renderMenu(){
  menu.innerHTML="";
  menuData.forEach(i=>{
+  let count=cart[i[0]]?cart[i[0]].qty:0;
   menu.innerHTML+=`
   <div class="menu-item">
-    <span>${i.name} - PKR ${i.price}</span>
-    <button onclick="addItem('${i.name}',${i.price})">Add</button>
+    <span>${i[0]} - PKR ${i[1]}</span>
+    <button onclick="addItem('${i[0]}',${i[1]})">
+      Add ${count?`<span class="badge">${count}</span>`:""}
+    </button>
   </div>`;
  });
 }
@@ -179,6 +215,14 @@ function addItem(n,p){
  if(!cart[n]) cart[n]={qty:0,price:p};
  cart[n].qty++;
  renderBill();
+ renderMenu();
+}
+
+function changeQty(n,d){
+ cart[n].qty+=d;
+ if(cart[n].qty<=0) delete cart[n];
+ renderBill();
+ renderMenu();
 }
 
 function renderBill(){
@@ -188,7 +232,16 @@ function renderBill(){
   let i=cart[n];
   let t=i.qty*i.price;
   s+=t;
-  billItems.innerHTML+=`<tr><td>${n}</td><td>${i.qty}</td><td>${t}</td></tr>`;
+  billItems.innerHTML+=`
+  <tr>
+   <td>${n}</td>
+   <td>
+    <button class="qty-btn minus" onclick="changeQty('${n}',-1)">-</button>
+    ${i.qty}
+    <button class="qty-btn plus" onclick="changeQty('${n}',1)">+</button>
+   </td>
+   <td>${t}</td>
+  </tr>`;
  }
  sub.innerText=s;
  delivery.innerText=deliveryCharge;
@@ -214,6 +267,7 @@ function clearBill(){
  deliveryCharge=0;
  document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
  renderBill();
+ renderMenu();
 }
 </script>
 
