@@ -3,20 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SnackNest Kitchen POS</title>
+<title>Kitchen POS</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --primary:#e76f00;
-  --dark:#111;
   --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#111;
   --green:#0bb36c;
   --red:#e63946;
 }
-*{box-sizing:border-box;}
-body{margin:0;font-family:Poppins,sans-serif;background:var(--bg);}
+
+body.dark{
+  --bg:#0f1115;
+  --card:#1a1d23;
+  --text:#ffffff;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
 
 header{
   background:#111;
@@ -24,14 +37,25 @@ header{
   padding:14px;
   text-align:center;
   font-weight:700;
-  letter-spacing:.5px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header button{
+  background:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:12px;
+  cursor:pointer;
 }
 
 .container{max-width:1200px;margin:auto;padding:10px;}
 .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;}
 
 .card{
-  background:#fff;
+  background:var(--card);
   border-radius:16px;
   padding:14px;
   box-shadow:0 10px 30px rgba(0,0,0,.08);
@@ -43,11 +67,9 @@ header{
   justify-content:space-between;
   align-items:center;
   padding:10px 0;
-  border-bottom:1px dashed #ddd;
+  border-bottom:1px dashed #ccc;
   font-size:14px;
 }
-.menu-item span{font-weight:500;}
-
 .menu-item button{
   background:var(--primary);
   color:#fff;
@@ -57,11 +79,7 @@ header{
   font-size:12px;
   cursor:pointer;
   position:relative;
-  transition:.15s;
 }
-.menu-item button:active{transform:scale(.9);}
-
-/* ADD COUNT BADGE */
 .badge{
   position:absolute;
   top:-6px;
@@ -74,57 +92,81 @@ header{
 }
 
 /* BILL */
-.bill-header{text-align:center;}
-.bill-header img{width:160px;margin:auto;display:block;}
-.bill-header h3{font-size:24px;font-weight:900;margin:6px 0;}
+.bill-header{text-align:center}
+.bill-header img{width:180px;margin:auto;display:block}
 
-.bill table{width:100%;border-collapse:collapse;font-size:12px;}
-.bill th,.bill td{padding:6px;border-bottom:1px solid #eee;text-align:center;}
+.bill table{width:100%;border-collapse:collapse;font-size:12px}
+.bill th,.bill td{padding:6px;border-bottom:1px solid #ddd;text-align:center}
 
 .qty-btn{
   border:none;
-  background:#eee;
   padding:2px 7px;
   border-radius:6px;
+  cursor:pointer;
+}
+.plus{background:var(--green);color:#fff}
+.minus{background:var(--red);color:#fff}
+
+.total{display:flex;justify-content:space-between;font-size:13px}
+.total.grand{font-size:16px;font-weight:700;border-top:2px dashed var(--text);padding-top:6px}
+
+/* DELIVERY + CUSTOM */
+.delivery-box{
+  margin-top:10px;
+  border-top:1px dashed #ccc;
+  padding-top:8px;
+}
+.delivery-btns{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+.delivery-btns button{
+  padding:6px;
+  border:none;
+  border-radius:8px;
   font-size:12px;
   cursor:pointer;
 }
-.qty-btn.plus{background:var(--green);color:#fff;}
-.qty-btn.minus{background:var(--red);color:#fff;}
-
-.total{display:flex;justify-content:space-between;font-size:13px;}
-.total.grand{font-size:16px;font-weight:700;border-top:2px dashed #000;padding-top:6px;}
-
-/* DELIVERY */
-.delivery-box{margin-top:8px;border-top:1px dashed #ddd;padding-top:8px;}
-.delivery-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.delivery-btns button{
-  padding:6px;border:none;border-radius:8px;background:#eee;font-size:12px;
+.delivery-btns button.active{
+  background:var(--primary);
+  color:#fff;
 }
-.delivery-btns button.active{background:var(--primary);color:#fff;}
+
+input{
+  width:100%;
+  padding:6px;
+  margin-bottom:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:12px;
+}
 
 button.action{
   width:100%;
-  margin-top:6px;
   padding:10px;
   border:none;
   border-radius:10px;
   font-size:14px;
   font-weight:600;
+  margin-top:6px;
 }
-.print{background:#111;color:#fff;}
-.clear{background:#ccc;}
+.print{background:#111;color:#fff}
+.clear{background:#ccc}
 
 @media print{
-  header,.menu,.delivery-box,button{display:none!important;}
-  .bill{width:80mm;margin:auto;box-shadow:none;}
+  header,.menu,.delivery-box,button{display:none!important}
+  .bill{width:80mm;margin:auto;box-shadow:none}
 }
 </style>
 </head>
 
 <body>
 
-<header>🍽️ SnackNest Kitchen POS</header>
+<header>
+  <span>🍽️ Kitchen POS</span>
+  <button onclick="toggleTheme()">🌗 Theme</button>
+</header>
 
 <div class="container">
 <div class="grid">
@@ -138,10 +180,9 @@ button.action{
 <!-- BILL -->
 <div class="card bill">
 <div class="bill-header">
-<img src="logo.png">
-<h3>SNACKNEST KITCHEN</h3>
-<p id="billDate"></p>
-<p><b>Token #</b> <span id="tokenNo"></span></p>
+  <img src="png.jpg" alt="Logo">
+  <p id="billDate"></p>
+  <p><b>Token #</b> <span id="tokenNo"></span></p>
 </div>
 
 <table>
@@ -164,8 +205,11 @@ button.action{
 </div>
 </div>
 
-<div style="text-align:center;font-size:12px;margin-top:6px;">
-📱 0316 2341381<br>📍 Musharaf Colony, Karachi
+<div class="delivery-box">
+<h4>➕ Custom Item</h4>
+<input id="customName" placeholder="Item name">
+<input id="customPrice" type="number" placeholder="Price (PKR)">
+<button class="action print" onclick="addCustomItem()">Add Custom Item</button>
 </div>
 
 <button class="action print" onclick="printBill()">🖨️ Print Bill</button>
@@ -180,14 +224,9 @@ let token=Number(localStorage.getItem("token"))||1;
 let cart={},deliveryCharge=0;
 
 let menuData=[
-["Fried Rice Veg",200],["Fried Rice Chicken",250],["Chilli Chicken",250],
-["Chow Mein",250],["Bun Kabab",100],["Anday Wala Burger",150],
-["Zinger Breast",300],["Zinger Breast Cheese",350],
-["Zinger Thigh",350],["Zinger Thigh Cheese",400],
-["Alfredo",350],["Lasagne",500],
-["Masala Fries",150],["Cheese Fries",250],
-["Soft Drink 500ml",100],["Shawarma",170],
-["Momos",200],["Chicken Wings",350]
+["Fried Rice Veg",200],["Fried Rice Chicken",250],
+["Chilli Chicken",250],["Chow Mein",250],
+["Bun Kabab",100],["Zinger Burger",300]
 ];
 
 function init(){
@@ -200,13 +239,13 @@ init();
 function renderMenu(){
  menu.innerHTML="";
  menuData.forEach(i=>{
-  let count=cart[i[0]]?cart[i[0]].qty:0;
+  let c=cart[i[0]]?cart[i[0]].qty:0;
   menu.innerHTML+=`
   <div class="menu-item">
-    <span>${i[0]} - PKR ${i[1]}</span>
-    <button onclick="addItem('${i[0]}',${i[1]})">
-      Add ${count?`<span class="badge">${count}</span>`:""}
-    </button>
+   <span>${i[0]} - PKR ${i[1]}</span>
+   <button onclick="addItem('${i[0]}',${i[1]})">
+    Add ${c?`<span class="badge">${c}</span>`:""}
+   </button>
   </div>`;
  });
 }
@@ -214,23 +253,20 @@ function renderMenu(){
 function addItem(n,p){
  if(!cart[n]) cart[n]={qty:0,price:p};
  cart[n].qty++;
- renderBill();
- renderMenu();
+ renderBill();renderMenu();
 }
 
 function changeQty(n,d){
  cart[n].qty+=d;
  if(cart[n].qty<=0) delete cart[n];
- renderBill();
- renderMenu();
+ renderBill();renderMenu();
 }
 
 function renderBill(){
  billItems.innerHTML="";
  let s=0;
  for(let n in cart){
-  let i=cart[n];
-  let t=i.qty*i.price;
+  let i=cart[n],t=i.qty*i.price;
   s+=t;
   billItems.innerHTML+=`
   <tr>
@@ -255,6 +291,16 @@ function setDelivery(a,b){
  renderBill();
 }
 
+function addCustomItem(){
+ let n=customName.value.trim();
+ let p=Number(customPrice.value);
+ if(!n||p<=0) return alert("Enter valid name & price");
+ if(!cart[n]) cart[n]={qty:0,price:p};
+ cart[n].qty++;
+ customName.value="";customPrice.value="";
+ renderBill();
+}
+
 function printBill(){
  window.print();
  token++;
@@ -263,11 +309,13 @@ function printBill(){
 }
 
 function clearBill(){
- cart={};
- deliveryCharge=0;
+ cart={};deliveryCharge=0;
  document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
- renderBill();
- renderMenu();
+ renderBill();renderMenu();
+}
+
+function toggleTheme(){
+ document.body.classList.toggle("dark");
 }
 </script>
 
