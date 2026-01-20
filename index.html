@@ -161,6 +161,14 @@ header button{
   padding-top:8px;
 }
 
+/* BILL FOOTER */
+.bill-footer{
+  text-align:center;
+  margin-top:12px;
+  font-size:13px;
+  word-wrap:break-word;
+}
+
 /* SECTIONS */
 .section{
   margin-top:14px;
@@ -205,18 +213,20 @@ button.action{
 .print{background:#111;color:#fff}
 .clear{background:#ccc}
 
-/* MOBILE */
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-}
-@media(max-width:480px){
-  .bill-header img{width:200px;}
-}
-
 /* PRINT */
 @media print{
   header,.menu,.section,button{display:none!important}
   .bill{width:80mm;margin:auto;box-shadow:none}
+}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+  .bill-header img{
+    width:200px;
+  }
+  .bill-footer p{
+    font-size:12px;
+  }
 }
 </style>
 </head>
@@ -241,7 +251,7 @@ button.action{
 <!-- BILL -->
 <div class="card bill">
   <div class="bill-header">
-    <img src="logo.png" alt="Logo">
+    <img src="logo.png">
     <p id="billDate"></p>
     <p><b>Token #</b> <span id="tokenNo"></span></p>
   </div>
@@ -257,7 +267,13 @@ button.action{
   <div class="total"><span>Delivery</span><span id="delivery">0</span></div>
   <div class="total grand"><span>Total</span><span id="total">0</span></div>
 
-  <!-- DELIVERY -->
+  <!-- BILL FOOTER -->
+  <div class="bill-footer">
+    <p>Phone: 0316 2341381</p>
+    <p>Address: Plot 86, F Block, Musharaf Colony, Karachi, Pakistan</p>
+  </div>
+
+  <!-- DELIVERY CHARGES -->
   <div class="section">
     <h4>Delivery Charges</h4>
     <div class="delivery-btns">
@@ -266,8 +282,8 @@ button.action{
       <button onclick="setDelivery(200,this)">Others – 200</button>
     </div>
 
-    <input id="customDelivery" type="number" placeholder="Custom Delivery (PKR)">
-    <button class="action print" onclick="applyCustomDelivery()">Apply Custom Delivery</button>
+    <input id="customDelivery" type="number" placeholder="Custom Delivery PKR">
+    <button class="action print" onclick="applyCustomDelivery()">Apply Delivery</button>
   </div>
 
   <!-- CUSTOM ITEM -->
@@ -279,6 +295,7 @@ button.action{
   </div>
 
   <button class="action print" onclick="printBill()">Print Bill</button>
+  <button class="action print" onclick="shareWhatsApp()">Share on WhatsApp</button>
   <button class="action clear" onclick="clearBill()">Clear</button>
 </div>
 
@@ -295,7 +312,8 @@ let menuData = {
     ["Fried Rice Chicken",250],
     ["Chilli Chicken",250],
     ["Chow Mein",250],
-    ["Alfredo",350]
+    ["Alfredo",350],
+    ["Lasagne",50]
   ],
   "Burgers":[
     ["Bun Kabab",100],
@@ -305,21 +323,31 @@ let menuData = {
     ["Zinger Thigh",350],
     ["Zinger Thigh Cheese",400]
   ],
-  "Fries":[
+  "Snacks":[
     ["Masala Fries",150],
     ["Mayo Fries",150],
-    ["Cheese Fries",250]
+    ["Cheese Fries",250],
+    ["Chicken Wings",350],
+    ["Shawarma",170],
+    ["Momos",200]
   ],
   "Drinks":[
     ["1.5L Next Cola",220],
-    ["500ml Next Cola",100]
+    ["1.5L Fizup Next",220],
+    ["500ml Next Cola",100],
+    ["500ml Fizup Next",100]
   ]
 };
 
 let currentCategory = Object.keys(menuData)[0];
 
-function init(){
+function updateDateTime(){
   billDate.innerText = new Date().toLocaleString();
+}
+setInterval(updateDateTime,1000);
+
+function init(){
+  updateDateTime();
   tokenNo.innerText = token;
   renderCategories();
   renderMenu();
@@ -357,10 +385,14 @@ function addItem(n,p){
   renderBill();renderMenu();
 }
 
-function changeQty(n,d){
-  cart[n].qty+=d;
-  if(cart[n].qty<=0) delete cart[n];
-  renderBill();renderMenu();
+function addCustomItem(){
+  let n=customName.value.trim();
+  let p=Number(customPrice.value);
+  if(!n||p<=0) return alert("Invalid item");
+  if(!cart[n]) cart[n]={qty:0,price:p};
+  cart[n].qty++;
+  customName.value="";customPrice.value="";
+  renderBill();
 }
 
 function renderBill(){
@@ -372,11 +404,7 @@ function renderBill(){
     billItems.innerHTML+=`
     <tr>
       <td>${n}</td>
-      <td>
-        <button class="qty-btn minus" onclick="changeQty('${n}',-1)">-</button>
-        ${i.qty}
-        <button class="qty-btn plus" onclick="changeQty('${n}',1)">+</button>
-      </td>
+      <td>${i.qty}</td>
       <td>${t}</td>
     </tr>`;
   }
@@ -401,21 +429,25 @@ function applyCustomDelivery(){
   renderBill();
 }
 
-function addCustomItem(){
-  let n=customName.value.trim();
-  let p=Number(customPrice.value);
-  if(!n||p<=0) return alert("Enter valid item");
-  if(!cart[n]) cart[n]={qty:0,price:p};
-  cart[n].qty++;
-  customName.value="";customPrice.value="";
-  renderBill();
-}
-
 function printBill(){
   window.print();
   token++;
   localStorage.setItem("token",token);
   clearBill();
+}
+
+function shareWhatsApp(){
+  if(Object.keys(cart).length===0){alert("Bill empty");return;}
+  let msg="Snacknest Kitchen\nToken #: "+token+"\nDate: "+new Date().toLocaleString()+"\n\n";
+  let s=0;
+  for(let n in cart){
+    let i=cart[n],t=i.qty*i.price;
+    s+=t;
+    msg+=`${n} x ${i.qty} = PKR ${t}\n`;
+  }
+  msg+="\nDelivery: PKR "+deliveryCharge;
+  msg+="\nTOTAL: PKR "+(s+deliveryCharge);
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
 function clearBill(){
