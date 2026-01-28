@@ -21,7 +21,6 @@ body.dark{
   --card:#1b1f26;
   --text:#ffffff;
 }
-
 *{box-sizing:border-box}
 body{
   margin:0;
@@ -29,8 +28,6 @@ body{
   background:var(--bg);
   color:var(--text);
 }
-
-/* HEADER */
 header{
   background:var(--card);
   padding:16px 24px;
@@ -49,16 +46,12 @@ header button{
   font-weight:600;
   cursor:pointer;
 }
-
-/* LAYOUT */
 .container{max-width:1200px;margin:auto;padding:16px;}
 .grid{
   display:grid;
   grid-template-columns:1.3fr 1fr;
   gap:16px;
 }
-
-/* CARD */
 .card{
   background:var(--card);
   border-radius:16px;
@@ -67,8 +60,6 @@ header button{
   max-height:80vh;
   overflow:auto;
 }
-
-/* CATEGORY */
 .category-menu{
   display:flex;
   gap:10px;
@@ -87,8 +78,6 @@ header button{
   background:var(--primary);
   color:#fff;
 }
-
-/* MENU */
 .menu-item{
   display:flex;
   justify-content:space-between;
@@ -117,8 +106,6 @@ header button{
   padding:2px 6px;
   border-radius:50%;
 }
-
-/* BILL */
 .bill-header{text-align:center}
 .bill-header img{
   width:300px;
@@ -126,7 +113,6 @@ header button{
   display:block;
 }
 .bill-header p{margin:4px 0;font-size:13px}
-
 .bill table{
   width:100%;
   border-collapse:collapse;
@@ -137,17 +123,6 @@ header button{
   border-bottom:1px solid #ddd;
   text-align:center;
 }
-
-.qty-btn{
-  border:none;
-  padding:4px 10px;
-  border-radius:8px;
-  font-size:14px;
-  cursor:pointer;
-}
-.plus{background:var(--green);color:#fff}
-.minus{background:var(--red);color:#fff}
-
 .total{
   display:flex;
   justify-content:space-between;
@@ -160,22 +135,16 @@ header button{
   border-top:2px dashed var(--text);
   padding-top:8px;
 }
-
-/* BILL FOOTER */
 .bill-footer{
   text-align:center;
   margin-top:12px;
   font-size:13px;
-  word-wrap:break-word;
 }
-
-/* SECTIONS */
 .section{
   margin-top:14px;
   border-top:1px dashed #ccc;
   padding-top:10px;
 }
-
 .delivery-btns{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -191,16 +160,13 @@ header button{
   background:var(--primary);
   color:#fff;
 }
-
 input{
   width:100%;
   padding:10px;
   border-radius:8px;
   border:1px solid #ccc;
   margin-bottom:8px;
-  font-size:14px;
 }
-
 button.action{
   width:100%;
   padding:12px;
@@ -212,21 +178,9 @@ button.action{
 }
 .print{background:#111;color:#fff}
 .clear{background:#ccc}
-
-/* PRINT */
 @media print{
   header,.menu,.section,button{display:none!important}
   .bill{width:80mm;margin:auto;box-shadow:none}
-}
-
-/* RESPONSIVE */
-@media (max-width:768px){
-  .bill-header img{
-    width:200px;
-  }
-  .bill-footer p{
-    font-size:12px;
-  }
 }
 </style>
 </head>
@@ -241,14 +195,12 @@ button.action{
 <div class="container">
 <div class="grid">
 
-<!-- MENU -->
 <div class="card menu">
   <h3>Menu</h3>
   <div class="category-menu" id="categories"></div>
   <div id="menu"></div>
 </div>
 
-<!-- BILL -->
 <div class="card bill">
   <div class="bill-header">
     <img src="logo.png">
@@ -267,35 +219,12 @@ button.action{
   <div class="total"><span>Delivery</span><span id="delivery">0</span></div>
   <div class="total grand"><span>Total</span><span id="total">0</span></div>
 
-  <!-- BILL FOOTER -->
   <div class="bill-footer">
     <p>Phone: 0316 2341381</p>
-    <p>Address: Plot 86, F Block, Musharaf Colony, Karachi, Pakistan</p>
-  </div>
-
-  <!-- DELIVERY CHARGES -->
-  <div class="section">
-    <h4>Delivery Charges</h4>
-    <div class="delivery-btns">
-      <button onclick="setDelivery(50,this)">Musharaf – 50</button>
-      <button onclick="setDelivery(150,this)">Naval – 150</button>
-      <button onclick="setDelivery(200,this)">Others – 200</button>
-    </div>
-
-    <input id="customDelivery" type="number" placeholder="Custom Delivery PKR">
-    <button class="action print" onclick="applyCustomDelivery()">Apply Delivery</button>
-  </div>
-
-  <!-- CUSTOM ITEM -->
-  <div class="section">
-    <h4>Custom Item</h4>
-    <input id="customName" placeholder="Item name">
-    <input id="customPrice" type="number" placeholder="Price PKR">
-    <button class="action print" onclick="addCustomItem()">Add Item</button>
+    <p>Address: Plot 86, F Block, Musharaf Colony, Karachi</p>
   </div>
 
   <button class="action print" onclick="printBill()">Print Bill</button>
-  <button class="action print" onclick="shareWhatsApp()">Share on WhatsApp</button>
   <button class="action clear" onclick="clearBill()">Clear</button>
 </div>
 
@@ -330,6 +259,23 @@ let menuData = {
     ["Chicken Wings",350],
     ["Shawarma",170],
     ["Momos",200]
+  ],
+  "Pizzas":[
+    ["Chicken Fajita Small",350],
+    ["Chicken Fajita Medium",750],
+    ["Chicken Fajita Large",1050],
+    ["Chicken Tikka Small",350],
+    ["Chicken Tikka Medium",750],
+    ["Chicken Tikka Large",1050],
+    ["Afghani Small",350],
+    ["Afghani Medium",750],
+    ["Afghani Large",1050],
+    ["Creamy Tikka Small",350],
+    ["Creamy Tikka Medium",750],
+    ["Creamy Tikka Large",1050],
+    ["Chef Special Small",350],
+    ["Chef Special Medium",750],
+    ["Chef Special Large",1050]
   ],
   "Drinks":[
     ["1.5L Next Cola",220],
@@ -385,16 +331,6 @@ function addItem(n,p){
   renderBill();renderMenu();
 }
 
-function addCustomItem(){
-  let n=customName.value.trim();
-  let p=Number(customPrice.value);
-  if(!n||p<=0) return alert("Invalid item");
-  if(!cart[n]) cart[n]={qty:0,price:p};
-  cart[n].qty++;
-  customName.value="";customPrice.value="";
-  renderBill();
-}
-
 function renderBill(){
   billItems.innerHTML="";
   let s=0;
@@ -402,31 +338,10 @@ function renderBill(){
     let i=cart[n],t=i.qty*i.price;
     s+=t;
     billItems.innerHTML+=`
-    <tr>
-      <td>${n}</td>
-      <td>${i.qty}</td>
-      <td>${t}</td>
-    </tr>`;
+    <tr><td>${n}</td><td>${i.qty}</td><td>${t}</td></tr>`;
   }
   sub.innerText=s;
-  delivery.innerText=deliveryCharge;
-  total.innerText=s+deliveryCharge;
-}
-
-function setDelivery(a,b){
-  deliveryCharge=a;
-  document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  customDelivery.value="";
-  renderBill();
-}
-
-function applyCustomDelivery(){
-  let v=Number(customDelivery.value);
-  if(v<0) return;
-  deliveryCharge=v;
-  document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
-  renderBill();
+  total.innerText=s;
 }
 
 function printBill(){
@@ -436,24 +351,8 @@ function printBill(){
   clearBill();
 }
 
-function shareWhatsApp(){
-  if(Object.keys(cart).length===0){alert("Bill empty");return;}
-  let msg="Snacknest Kitchen\nToken #: "+token+"\nDate: "+new Date().toLocaleString()+"\n\n";
-  let s=0;
-  for(let n in cart){
-    let i=cart[n],t=i.qty*i.price;
-    s+=t;
-    msg+=`${n} x ${i.qty} = PKR ${t}\n`;
-  }
-  msg+="\nDelivery: PKR "+deliveryCharge;
-  msg+="\nTOTAL: PKR "+(s+deliveryCharge);
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
-
 function clearBill(){
-  cart={};deliveryCharge=0;
-  document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
-  customDelivery.value="";
+  cart={};
   renderBill();renderMenu();
 }
 
