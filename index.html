@@ -1,21 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snacknest Kitchen</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
 :root{
   --primary:#e76f00;
   --bg:#f4f6fb;
   --card:#ffffff;
   --text:#111;
-  --green:#0bb36c;
-  --red:#e63946;
 }
 body.dark{
   --bg:#0f1115;
@@ -25,7 +20,7 @@ body.dark{
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Poppins,sans-serif;
+  font-family:Poppins, sans-serif;
   background:var(--bg);
   color:var(--text);
 }
@@ -53,149 +48,48 @@ header button{
   grid-template-columns:1.3fr 1fr;
   gap:16px;
 }
-.card{
-  background:var(--card);
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-  max-height:80vh;
-  overflow:auto;
-}
-.category-menu{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  margin-bottom:12px;
-}
-.category-menu button{
-  border:none;
-  padding:8px 16px;
-  border-radius:8px;
-  background:#ddd;
-  font-weight:600;
-  cursor:pointer;
-}
-.category-menu button.active{
-  background:var(--primary);
-  color:#fff;
-}
-.menu-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px dashed #ccc;
-  font-size:14px;
-}
-.menu-item button{
-  background:var(--primary);
-  color:#fff;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  font-size:13px;
-  cursor:pointer;
-  position:relative;
-}
-.badge{
-  position:absolute;
-  top:-6px;
-  right:-6px;
-  background:#111;
-  color:#fff;
-  font-size:10px;
-  padding:2px 6px;
-  border-radius:50%;
-}
-.bill-header{text-align:center}
-.bill-header img{
-  width:300px;
-  margin:10px auto;
-  display:block;
-}
-.bill-header p{margin:4px 0;font-size:13px}
-.bill table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-.bill th,.bill td{
-  padding:8px;
-  border-bottom:1px solid #ddd;
-  text-align:center;
-}
-.total{
-  display:flex;
-  justify-content:space-between;
-  margin-top:6px;
-  font-size:14px;
-}
-.total.grand{
-  font-size:17px;
-  font-weight:700;
-  border-top:2px dashed var(--text);
-  padding-top:8px;
-}
-.bill-footer{
-  text-align:center;
-  margin-top:12px;
-  font-size:13px;
-}
-.section{
-  margin-top:14px;
-  border-top:1px dashed #ccc;
-  padding-top:10px;
-}
-.delivery-btns{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-.delivery-btns button{
-  border:none;
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.delivery-btns button.active{
-  background:var(--primary);
-  color:#fff;
-}
-input{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  margin-bottom:8px;
-}
-button.action{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  font-weight:600;
-  cursor:pointer;
-  margin-top:8px;
-}
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:0 10px 25px rgba(0,0,0,.08);max-height:80vh;overflow:auto;}
+.category-menu{display:flex;gap:10px;overflow-x:auto;margin-bottom:12px;}
+.category-menu button{border:none;padding:8px 16px;border-radius:8px;background:#ddd;font-weight:600;cursor:pointer;}
+.category-menu button.active{background:var(--primary);color:#fff;}
+.menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed #ccc;font-size:14px;}
+.menu-item button{background:var(--primary);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:13px;cursor:pointer;position:relative;}
+.badge{position:absolute;top:-6px;right:-6px;background:#111;color:#fff;font-size:10px;padding:2px 6px;border-radius:50%;}
+
+/* BILL STYLING */
+.bill{font-family:Roboto Mono, monospace; width:320px; margin:auto; padding:10px; border:1px dashed #ccc;}
+.bill-header{text-align:center; margin-bottom:5px;}
+.bill-header img{width:200px; display:block; margin:0 auto 5px auto;}
+#billInfo{text-align:center;font-size:12px; margin-bottom:5px;}
+#billInfo p{margin:1px 0;}
+.bill table{width:100%; border-collapse:collapse; font-size:12px;}
+.bill th,.bill td{padding:4px; text-align:center;}
+.bill td.item{text-align:left;}
+.bill tfoot td{border-top:1px dashed #111; font-weight:bold;}
+.bill-footer{text-align:center; font-size:12px; margin-top:5px;}
+.hr{border-top:1px dashed #111; margin:5px 0;}
+.section{margin-top:10px;}
+input,select{width:100%;padding:6px;border-radius:6px;border:1px solid #ccc;margin-bottom:4px;font-size:12px;}
+button.action{width:100%;padding:10px;border:none;border-radius:8px;font-weight:600;cursor:pointer;margin-top:4px;}
 .print{background:#111;color:#fff}
 .clear{background:#ccc}
+
+/* PRINT */
 @media print{
-  header,.menu,.section,button{display:none!important}
-  .bill{width:80mm;margin:auto;box-shadow:none}
+  header,.menu,.section,button,input,select{display:none!important}
+  .bill{width:80mm;margin:auto;box-shadow:none;text-align:center;}
+  td,th{text-align:center;}
+  td.item{text-align:left;}
 }
 </style>
 </head>
-
 <body>
-
 <header>
   <span>Kitchen POS</span>
   <button onclick="toggleTheme()">Toggle Theme</button>
 </header>
-
 <div class="container">
 <div class="grid">
-
 <div class="card menu">
   <h3>Menu</h3>
   <div class="category-menu" id="categories"></div>
@@ -204,9 +98,32 @@ button.action{
 
 <div class="card bill">
   <div class="bill-header">
-    <img src="logo.png">
+    <img src="logo.png" alt="Logo">
     <p id="billDate"></p>
     <p><b>Token #</b> <span id="tokenNo"></span></p>
+  </div>
+
+  <div id="billInfo">
+    <p><b>Customer:</b> <span id="billCustName">-</span></p>
+    <p><b>Phone:</b> <span id="billCustPhone">-</span></p>
+    <p><b>Address:</b> <span id="billCustAddress">-</span></p>
+    <p><b>Order Type:</b> <span id="billOrderType">-</span></p>
+    <p><b>Payment:</b> <span id="billPayment">-</span></p>
+  </div>
+
+  <div class="section">
+    <input id="custName" placeholder="Customer Name">
+    <input id="custPhone" placeholder="Phone Number">
+    <input id="custAddress" placeholder="Address">
+    <select id="orderType">
+      <option>Dine-in</option>
+      <option>Takeaway</option>
+      <option>Delivery</option>
+    </select>
+    <select id="paymentMethod">
+      <option>Cash</option>
+      <option>Online</option>
+    </select>
   </div>
 
   <table>
@@ -214,15 +131,18 @@ button.action{
       <tr><th>Item</th><th>Qty</th><th>Amount</th></tr>
     </thead>
     <tbody id="billItems"></tbody>
+    <tfoot>
+      <tr><td colspan="2">Subtotal</td><td id="sub">0</td></tr>
+      <tr><td colspan="2">Delivery</td><td id="delivery">0</td></tr>
+      <tr><td colspan="2">TOTAL</td><td id="total">0</td></tr>
+    </tfoot>
   </table>
 
-  <div class="total"><span>Subtotal</span><span id="sub">0</span></div>
-  <div class="total"><span>Delivery</span><span id="delivery">0</span></div>
-  <div class="total grand"><span>Total</span><span id="total">0</span></div>
-
+  <div class="hr"></div>
   <div class="bill-footer">
-    <p>Phone: 0316 2341381</p>
-    <p>Address: Plot 86, F Block, Musharaf Colony, Karachi</p>
+    <p><b>Thank you for your order!</b></p>
+    <p>0316 2341381</p>
+    <p>Musharaf Colony, Karachi</p>
   </div>
 
   <div class="section">
@@ -232,77 +152,58 @@ button.action{
       <button onclick="setDelivery(150,this)">Naval – 150</button>
       <button onclick="setDelivery(200,this)">Others – 200</button>
     </div>
-    <input id="customDelivery" type="number" placeholder="Custom Delivery PKR">
+    <input id="customDelivery" type="number" placeholder="Custom Delivery">
     <button class="action print" onclick="applyCustomDelivery()">Apply Delivery</button>
   </div>
 
   <div class="section">
     <h4>Custom Item</h4>
     <input id="customName" placeholder="Item name">
-    <input id="customPrice" type="number" placeholder="Price PKR">
+    <input id="customPrice" type="number" placeholder="Price">
     <button class="action print" onclick="addCustomItem()">Add Item</button>
   </div>
 
-  <button class="action print" onclick="printBill()">Print Bill</button>
-  <button class="action print" onclick="shareWhatsApp()">Share on WhatsApp</button>
+  <button class="action print" onclick="printBill()">Print</button>
+  <button class="action print" onclick="shareWhatsApp()">WhatsApp</button>
   <button class="action clear" onclick="clearBill()">Clear</button>
 </div>
-
 </div>
 </div>
 
 <script>
-let token=Number(localStorage.getItem("token"))||1;
-let cart={},deliveryCharge=0;
+// INPUTS
+const custName = document.getElementById("custName");
+const custPhone = document.getElementById("custPhone");
+const custAddress = document.getElementById("custAddress");
+const orderType = document.getElementById("orderType");
+const paymentMethod = document.getElementById("paymentMethod");
+const customName = document.getElementById("customName");
+const customPrice = document.getElementById("customPrice");
+const customDelivery = document.getElementById("customDelivery");
 
+// BILL DISPLAY
+const billCustName = document.getElementById("billCustName");
+const billCustPhone = document.getElementById("billCustPhone");
+const billCustAddress = document.getElementById("billCustAddress");
+const billOrderType = document.getElementById("billOrderType");
+const billPayment = document.getElementById("billPayment");
+const billDate = document.getElementById("billDate");
+const billItems = document.getElementById("billItems");
+const sub = document.getElementById("sub");
+const delivery = document.getElementById("delivery");
+const total = document.getElementById("total");
+const tokenNo = document.getElementById("tokenNo");
+
+let token = Number(localStorage.getItem("token")) || 1;
+let cart = {}, deliveryCharge = 0;
+
+// FULL MENU
 let menuData={
-"Rice & Pasta":[
-["Fried Rice Veg",200],
-["Fried Rice Chicken",250],
-["Chilli Chicken",250],
-["Chow Mein",250],
-["Alfredo",350],
-["Lasagne",500]
-],
-"Burgers":[
-["Bun Kabab",100],
-["Anday Wala Burger",150],
-["Zinger Breast",300],
-["Zinger Breast Cheese",350],
-["Zinger Thigh",350],
-["Zinger Thigh Cheese",400]
-],
-"Snacks":[
-["Masala Fries",150],
-["Mayo Fries",150],
-["Cheese Fries",250],
-["Chicken Wings",350],
-["Shawarma",170],
-["Momos",200]
-],
-"Pizzas":[
-["Chicken Fajita Small",350],
-["Chicken Fajita Medium",750],
-["Chicken Fajita Large",1050],
-["Chicken Tikka Small",350],
-["Chicken Tikka Medium",750],
-["Chicken Tikka Large",1050],
-["Afghani Small",350],
-["Afghani Medium",750],
-["Afghani Large",1050],
-["Creamy Tikka Small",350],
-["Creamy Tikka Medium",750],
-["Creamy Tikka Large",1050],
-["Chef Special Small",350],
-["Chef Special Medium",750],
-["Chef Special Large",1050]
-],
-"Drinks":[
-["1.5L Next Cola",220],
-["1.5L Fizup Next",220],
-["500ml Next Cola",100],
-["500ml Fizup Next",100]
-]
+"Rice & Pasta":[["Fried Rice Veg",200],["Fried Rice Chicken",250],["Chilli Chicken",250],["Chow Mein",250],["Alfredo",350],["Lasagne",500]],
+"Burgers":[["Bun Kabab",100],["Anday Wala Burger",150],["Zinger Breast",300],["Zinger Breast Cheese",350],["Zinger Thigh",350],["Zinger Thigh Cheese",400]],
+"Snacks":[["Masala Fries",150],["Mayo Fries",150],["Cheese Fries",250],["Chicken Wings",350],["Shawarma",170],["Momos",200]],
+"Pizzas":[["Chicken Fajita Small",350],["Chicken Fajita Medium",750],["Chicken Fajita Large",1050],["Chicken Tikka Small",350],["Chicken Tikka Medium",750],["Chicken Tikka Large",1050],["Afghani Small",350],["Afghani Medium",750],["Afghani Large",1050],["Creamy Tikka Small",350],["Creamy Tikka Medium",750],["Creamy Tikka Large",1050],["Chef Special Small",350],["Chef Special Medium",750],["Chef Special Large",1050]],
+"Drinks":[["1.5L Next Cola",220],["1.5L Fizup Next",220],["500ml Next Cola",100],["500ml Fizup Next",100]]
 };
 
 let currentCategory=Object.keys(menuData)[0];
@@ -310,103 +211,47 @@ let currentCategory=Object.keys(menuData)[0];
 function updateDateTime(){billDate.innerText=new Date().toLocaleString();}
 setInterval(updateDateTime,1000);
 
-function init(){
-updateDateTime();
-tokenNo.innerText=token;
-renderCategories();
-renderMenu();
-}
-init();
-
 function renderCategories(){
-categories.innerHTML="";
-Object.keys(menuData).forEach(c=>{
-let b=document.createElement("button");
-b.innerText=c;
-if(c===currentCategory)b.classList.add("active");
-b.onclick=()=>{currentCategory=c;renderMenu();renderCategories();}
-categories.appendChild(b);
-});
+  categories.innerHTML="";
+  Object.keys(menuData).forEach(c=>{
+    let b=document.createElement("button");
+    b.innerText=c;
+    if(c===currentCategory)b.classList.add("active");
+    b.onclick=()=>{currentCategory=c;renderMenu();renderCategories();}
+    categories.appendChild(b);
+  });
 }
+renderCategories();
 
 function renderMenu(){
-menu.innerHTML="";
-menuData[currentCategory].forEach(i=>{
-let q=cart[i[0]]?.qty||0;
-menu.innerHTML+=`
-<div class="menu-item">
-<span>${i[0]} - PKR ${i[1]}</span>
-<button onclick="addItem('${i[0]}',${i[1]})">
-Add ${q?`<span class="badge">${q}</span>`:""}
-</button>
-</div>`;
-});
+  menu.innerHTML="";
+  menuData[currentCategory].forEach(i=>{
+    let q=cart[i[0]]?.qty||0;
+    menu.innerHTML+=`<div class="menu-item"><span>${i[0]} - PKR ${i[1]}</span><button onclick="addItem('${i[0]}',${i[1]})">Add ${q?`<span class="badge">${q}</span>`:""}</button></div>`;
+  });
 }
 
-function addItem(n,p){
-if(!cart[n])cart[n]={qty:0,price:p};
-cart[n].qty++;
-renderBill();renderMenu();
-}
-
-function addCustomItem(){
-let n=customName.value.trim();
-let p=Number(customPrice.value);
-if(!n||p<=0)return alert("Invalid item");
-if(!cart[n])cart[n]={qty:0,price:p};
-cart[n].qty++;
-customName.value="";customPrice.value="";
-renderBill();
-}
+function addItem(n,p){if(!cart[n])cart[n]={qty:0,price:p};cart[n].qty++;renderBill();renderMenu();}
+function addCustomItem(){let n=customName.value,p=Number(customPrice.value);if(!n||p<=0)return;if(!cart[n])cart[n]={qty:0,price:p};cart[n].qty++;customName.value="";customPrice.value="";renderBill();}
 
 function renderBill(){
-billItems.innerHTML="";
-let s=0;
-for(let n in cart){
-let i=cart[n],t=i.qty*i.price;
-s+=t;
-billItems.innerHTML+=`<tr><td>${n}</td><td>${i.qty}</td><td>${t}</td></tr>`;
-}
-sub.innerText=s;
-delivery.innerText=deliveryCharge;
-total.innerText=s+deliveryCharge;
+  billItems.innerHTML="";let s=0;
+  for(let n in cart){let i=cart[n],t=i.qty*i.price;s+=t;billItems.innerHTML+=`<tr><td class="item">${n}</td><td>${i.qty}</td><td>${t}</td></tr>`;}
+  sub.innerText=s;delivery.innerText=deliveryCharge;total.innerText=s+deliveryCharge;
+  billCustName.innerText = custName.value || "-";
+  billCustPhone.innerText = custPhone.value || "-";
+  billCustAddress.innerText = custAddress.value || "-";
+  billOrderType.innerText = orderType.value || "-";
+  billPayment.innerText = paymentMethod.value || "-";
+  tokenNo.innerText = token;
 }
 
-function setDelivery(a,b){
-deliveryCharge=a;
-document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-customDelivery.value="";
-renderBill();
-}
-function applyCustomDelivery(){
-deliveryCharge=Number(customDelivery.value)||0;
-document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));
-renderBill();
-}
-function printBill(){
-window.print();
-token++;localStorage.setItem("token",token);
-clearBill();
-}
-function shareWhatsApp(){
-let msg="Snacknest Kitchen\nToken #"+token+"\n\n";
-let s=0;
-for(let n in cart){
-let i=cart[n],t=i.qty*i.price;
-s+=t;
-msg+=`${n} x ${i.qty} = PKR ${t}\n`;
-}
-msg+=`\nDelivery: ${deliveryCharge}\nTOTAL: ${s+deliveryCharge}`;
-window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
-function clearBill(){
-cart={};deliveryCharge=0;
-customDelivery.value="";
-renderBill();renderMenu();
-}
+function setDelivery(v,b){deliveryCharge=v;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));b.classList.add("active");customDelivery.value="";renderBill();}
+function applyCustomDelivery(){deliveryCharge=Number(customDelivery.value)||0;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();}
+function printBill(){window.print();token++;localStorage.setItem("token",token);clearBill();}
+function shareWhatsApp(){let msg=`Snacknest Kitchen\nToken #${token}\n${custName.value}\n${custPhone.value}\n${custAddress.value}\nOrder: ${orderType.value}\nPayment: ${paymentMethod.value}\n\n`;let s=0;for(let n in cart){let i=cart[n];s+=i.qty*i.price;msg+=`${n} x ${i.qty} = ${i.qty*i.price}\n`; } msg+=`\nDelivery: ${deliveryCharge}\nTOTAL: ${s+deliveryCharge}\nThank You!`;window.open("https://wa.me/?text="+encodeURIComponent(msg));}
+function clearBill(){cart={};deliveryCharge=0;custName.value="";custPhone.value="";custAddress.value="";customDelivery.value="";customName.value="";customPrice.value="";document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();renderMenu();}
 function toggleTheme(){document.body.classList.toggle("dark");}
 </script>
-
 </body>
 </html>
