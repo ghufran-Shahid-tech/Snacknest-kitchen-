@@ -171,7 +171,6 @@ button.action{width:100%;padding:10px;border:none;border-radius:8px;font-weight:
 </div>
 
 <script>
-// INPUTS
 const custName = document.getElementById("custName");
 const custPhone = document.getElementById("custPhone");
 const custAddress = document.getElementById("custAddress");
@@ -181,7 +180,6 @@ const customName = document.getElementById("customName");
 const customPrice = document.getElementById("customPrice");
 const customDelivery = document.getElementById("customDelivery");
 
-// BILL DISPLAY
 const billCustName = document.getElementById("billCustName");
 const billCustPhone = document.getElementById("billCustPhone");
 const billCustAddress = document.getElementById("billCustAddress");
@@ -197,7 +195,6 @@ const tokenNo = document.getElementById("tokenNo");
 let token = Number(localStorage.getItem("token")) || 1;
 let cart = {}, deliveryCharge = 0;
 
-// FULL MENU
 let menuData={
 "Rice & Pasta":[["Fried Rice Veg",200],["Fried Rice Chicken",250],["Chilli Chicken",250],["Chow Mein",250],["Alfredo",350],["Lasagne",500]],
 "Burgers":[["Bun Kabab",100],["Anday Wala Burger",150],["Zinger Breast",300],["Zinger Breast Cheese",350],["Zinger Thigh",350],["Zinger Thigh Cheese",400]],
@@ -221,7 +218,6 @@ function renderCategories(){
     categories.appendChild(b);
   });
 }
-renderCategories();
 
 function renderMenu(){
   menu.innerHTML="";
@@ -230,6 +226,12 @@ function renderMenu(){
     menu.innerHTML+=`<div class="menu-item"><span>${i[0]} - PKR ${i[1]}</span><button onclick="addItem('${i[0]}',${i[1]})">Add ${q?`<span class="badge">${q}</span>`:""}</button></div>`;
   });
 }
+
+// INIT
+window.addEventListener("DOMContentLoaded",()=>{
+  renderCategories();
+  renderMenu();
+});
 
 function addItem(n,p){if(!cart[n])cart[n]={qty:0,price:p};cart[n].qty++;renderBill();renderMenu();}
 function addCustomItem(){let n=customName.value,p=Number(customPrice.value);if(!n||p<=0)return;if(!cart[n])cart[n]={qty:0,price:p};cart[n].qty++;customName.value="";customPrice.value="";renderBill();}
@@ -248,7 +250,19 @@ function renderBill(){
 
 function setDelivery(v,b){deliveryCharge=v;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));b.classList.add("active");customDelivery.value="";renderBill();}
 function applyCustomDelivery(){deliveryCharge=Number(customDelivery.value)||0;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();}
-function printBill(){window.print();token++;localStorage.setItem("token",token);clearBill();}
+function printBill(){
+  // Update bill info just before print
+  billCustName.innerText = custName.value || "-";
+  billCustPhone.innerText = custPhone.value || "-";
+  billCustAddress.innerText = custAddress.value || "-";
+  billOrderType.innerText = orderType.value || "-";
+  billPayment.innerText = paymentMethod.value || "-";
+  tokenNo.innerText = token;
+
+  window.print();
+  token++; localStorage.setItem("token", token);
+  clearBill();
+}
 function shareWhatsApp(){let msg=`Snacknest Kitchen\nToken #${token}\n${custName.value}\n${custPhone.value}\n${custAddress.value}\nOrder: ${orderType.value}\nPayment: ${paymentMethod.value}\n\n`;let s=0;for(let n in cart){let i=cart[n];s+=i.qty*i.price;msg+=`${n} x ${i.qty} = ${i.qty*i.price}\n`; } msg+=`\nDelivery: ${deliveryCharge}\nTOTAL: ${s+deliveryCharge}\nThank You!`;window.open("https://wa.me/?text="+encodeURIComponent(msg));}
 function clearBill(){cart={};deliveryCharge=0;custName.value="";custPhone.value="";custAddress.value="";customDelivery.value="";customName.value="";customPrice.value="";document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();renderMenu();}
 function toggleTheme(){document.body.classList.toggle("dark");}
