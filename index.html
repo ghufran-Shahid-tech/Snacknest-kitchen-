@@ -90,12 +90,15 @@ button.action{width:100%;padding:10px;border:none;border-radius:8px;font-weight:
 </header>
 <div class="container">
 <div class="grid">
+
+<!-- MENU -->
 <div class="card menu">
   <h3>Menu</h3>
   <div class="category-menu" id="categories"></div>
   <div id="menu"></div>
 </div>
 
+<!-- BILL -->
 <div class="card bill">
   <div class="bill-header">
     <img src="logo.png" alt="Logo">
@@ -124,6 +127,13 @@ button.action{width:100%;padding:10px;border:none;border-radius:8px;font-weight:
       <option>Cash</option>
       <option>Online</option>
     </select>
+  </div>
+
+  <!-- Custom Token -->
+  <div class="section">
+    <h4>Token Number</h4>
+    <input type="number" id="customToken" placeholder="Enter token number (optional)">
+    <button class="action" onclick="applyCustomToken()">Set Token</button>
   </div>
 
   <table>
@@ -179,6 +189,7 @@ const paymentMethod = document.getElementById("paymentMethod");
 const customName = document.getElementById("customName");
 const customPrice = document.getElementById("customPrice");
 const customDelivery = document.getElementById("customDelivery");
+const customToken = document.getElementById("customToken");
 
 const billCustName = document.getElementById("billCustName");
 const billCustPhone = document.getElementById("billCustPhone");
@@ -192,7 +203,7 @@ const delivery = document.getElementById("delivery");
 const total = document.getElementById("total");
 const tokenNo = document.getElementById("tokenNo");
 
-let token = Number(localStorage.getItem("token")) || 1;
+let token = Number(localStorage.getItem("token")) || 0;
 let cart = {}, deliveryCharge = 0;
 
 let menuData={
@@ -227,7 +238,6 @@ function renderMenu(){
   });
 }
 
-// INIT
 window.addEventListener("DOMContentLoaded",()=>{
   renderCategories();
   renderMenu();
@@ -239,7 +249,8 @@ function addCustomItem(){let n=customName.value,p=Number(customPrice.value);if(!
 function renderBill(){
   billItems.innerHTML="";let s=0;
   for(let n in cart){let i=cart[n],t=i.qty*i.price;s+=t;billItems.innerHTML+=`<tr><td class="item">${n}</td><td>${i.qty}</td><td>${t}</td></tr>`;}
-  sub.innerText=s;delivery.innerText=deliveryCharge;total.innerText=s+deliveryCharge;
+  sub.innerText = s; delivery.innerText = deliveryCharge; total.innerText = s+deliveryCharge;
+
   billCustName.innerText = custName.value || "-";
   billCustPhone.innerText = custPhone.value || "-";
   billCustAddress.innerText = custAddress.value || "-";
@@ -250,21 +261,21 @@ function renderBill(){
 
 function setDelivery(v,b){deliveryCharge=v;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));b.classList.add("active");customDelivery.value="";renderBill();}
 function applyCustomDelivery(){deliveryCharge=Number(customDelivery.value)||0;document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();}
-function printBill(){
-  // Update bill info just before print
-  billCustName.innerText = custName.value || "-";
-  billCustPhone.innerText = custPhone.value || "-";
-  billCustAddress.innerText = custAddress.value || "-";
-  billOrderType.innerText = orderType.value || "-";
-  billPayment.innerText = paymentMethod.value || "-";
-  tokenNo.innerText = token;
 
-  window.print();
-  token++; localStorage.setItem("token", token);
-  clearBill();
+function applyCustomToken(){
+  let val = Number(customToken.value);
+  if(!isNaN(val) && val >= 0){
+    token = val;
+    localStorage.setItem("token", token);
+    renderBill();
+  }
 }
+
+function printBill(){renderBill(); window.print(); token++; localStorage.setItem("token", token); clearBill();}
 function shareWhatsApp(){let msg=`Snacknest Kitchen\nToken #${token}\n${custName.value}\n${custPhone.value}\n${custAddress.value}\nOrder: ${orderType.value}\nPayment: ${paymentMethod.value}\n\n`;let s=0;for(let n in cart){let i=cart[n];s+=i.qty*i.price;msg+=`${n} x ${i.qty} = ${i.qty*i.price}\n`; } msg+=`\nDelivery: ${deliveryCharge}\nTOTAL: ${s+deliveryCharge}\nThank You!`;window.open("https://wa.me/?text="+encodeURIComponent(msg));}
-function clearBill(){cart={};deliveryCharge=0;custName.value="";custPhone.value="";custAddress.value="";customDelivery.value="";customName.value="";customPrice.value="";document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();renderMenu();}
+
+function clearBill(){cart={};deliveryCharge=0;custName.value="";custPhone.value="";custAddress.value="";customDelivery.value="";customName.value="";customPrice.value="";customToken.value="";document.querySelectorAll(".delivery-btns button").forEach(x=>x.classList.remove("active"));renderBill();renderMenu();}
+
 function toggleTheme(){document.body.classList.toggle("dark");}
 </script>
 </body>
